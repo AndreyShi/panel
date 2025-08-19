@@ -12,7 +12,7 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 # Настройки окна
-WIDTH, HEIGHT = 1607, 906
+WIDTH, HEIGHT = 1024, 576
 # Инициализация
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
