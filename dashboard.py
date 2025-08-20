@@ -1,66 +1,119 @@
 import pygame
 import sys
-import math
+import time
 
-# Инициализация Pygame
-pygame.init()
-
-# Настройки окна
-WIDTH, HEIGHT = 1607, 906
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Приборная панель")
-
+def scale_image(image, factor):
+    """Масштабирует изображение с сохранением пропорций"""
+    new_size = (int(image.get_width() * factor), 
+                int(image.get_height() * factor))
+    return pygame.transform.scale(image, new_size)
 # Цвета
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
+# Настройки окна
+WIDTH, HEIGHT = 1024, 576  # разрешение экрана в linux
+# Инициализация
+pygame.init()
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Приборная панель")
 
-# Загрузка изображений
+# Загрузка фона
 try:
-    background = pygame.image.load("dashboard.png").convert()  # Фоновая панель
+    background = pygame.image.load("res/dashboard_1024_576.png").convert()  # Фон
     background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 except:
-    print("Ошибка: не найден файл dashboard.png. Создаю чёрный фон.")
+    print("Ошибка: dashboard.jpg не найден. Использую чёрный фон.")
     background = pygame.Surface((WIDTH, HEIGHT))
-    background.fill(BLACK)
-    # Рисуем заглушку спидометра
-    pygame.draw.circle(background, WHITE, (WIDTH//2, HEIGHT//2), 150, 5)
+    background.fill((0, 0, 0))
 
-# Параметры стрелки
-needle_img = pygame.Surface((20, 150), pygame.SRCALPHA)  # Прозрачная поверхность
-pygame.draw.rect(needle_img, RED, (0, 0, 20, 150))  # Красная стрелка
-needle_rect = needle_img.get_rect(center=(WIDTH//2, HEIGHT//2))
-angle = 0  # Начальный угол
+# Загрузка стрелки скорости
+try:
+    needle_img = pygame.image.load("res/arrowkmh_1024_576.png").convert_alpha()  # Важно!
+    # Уменьшаем в 0.8 раза (50% от оригинала)
+    # needle_img = scale_image(needle_img, 0.4)
+    needle_rect = needle_img.get_rect(center=(294, 242))
+except:
+    print("Ошибка: arrowkmh_1024_576.png не найден. Создаю красный прямоугольник.")
+
+# Загрузка стрелки RMP
+try:
+    rmp_img = pygame.image.load("res/arrowRMP_1024_576.png").convert_alpha()  # Важно!
+    rmp_rect = rmp_img.get_rect(center=(294, 242))
+except:
+    print("Ошибка: arrowRMP_1024_576.png не найден. Создаю красный прямоугольник.")
+
+# Загрузка стрелки уровня
+try:
+    level_img = pygame.image.load("res/level_arrow_1024_576.png").convert_alpha()  # Важно!
+    level_rect = level_img.get_rect(center=(969, 111))
+except:
+    print("Ошибка: level_arrow_1024_576.png не найден. Создаю красный прямоугольник.")
+
+
+angle_rmp = 125  # Начальный угол
+angle = 0      # Начальный угол
 
 # Основной цикл
 clock = pygame.time.Clock()
 running = True
+ccw = -1
+toup = True
+
+toup_rmp = True
 
 # Добавление текста (скорость, RPM)
-font = pygame.font.SysFont('Arial', 130)
-
-
-
+font = pygame.font.SysFont('Arial', 80)
+# Таймеры
+last_update_time = time.time()
+update_interval = 0.25  # Обновлять скорость каждые 0.5 секунды
+speed_text = font.render(f"{int(angle*0.73)}", True, WHITE)
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    # Обновление угла (имитация данных)
-    angle = (angle + 1) % 360
+    # Обновление угла стрелки Скорости(имитация данных)
+    if angle < 119 and toup == True:
+        angle = (angle + 1) % 120
+    elif angle == 0:
+        toup = True
+    else:
+        angle = (angle - 1) % 120
+        toup = False
 
+    # Обновление угла стрелки RMP(имитация данных)
+    #angle_rmp = (angle_rmp + 1) % 115
+    if angle_rmp < 114 and toup_rmp == True:
+        angle_rmp = (angle_rmp + 1) % 115
+    elif angle_rmp == 0:
+        toup_rmp = True
+    else:
+        angle_rmp = (angle_rmp - 1) % 115
+        toup_rmp = False
     # Отрисовка
     screen.blit(background, (0, 0))
 
-    # Вращение стрелки
-    rotated_needle = pygame.transform.rotate(needle_img, -angle)  # Отрицательный угол для правильного направления
+    # Вращение стрелки Скорости
+    rotated_needle = pygame.transform.rotate(needle_img, ccw * (angle + 228))  # Минус для правильного направления
     new_rect = rotated_needle.get_rect(center=needle_rect.center)
     screen.blit(rotated_needle, new_rect.topleft)
 
-    # Обновление скорости
-    speed_text = font.render(f"{int(angle/3.6)}", True, WHITE)
-    #speed_text = font.render(f"{int(43)}", True, WHITE)
-    screen.blit(speed_text, (590, 10))
+    # Вращение стрелки RMP
+    rotated_rmp = pygame.transform.rotate(rmp_img, -1 * (angle_rmp + 15))  # 15...130
+    new_rect = rotated_rmp.get_rect(center=rmp_rect.center)
+    screen.blit(rotated_rmp, new_rect.topleft)
+
+    # Изменение уровня
+
+        # --- Обновление данных (реже, чем кадры) ---
+    current_time = time.time()
+    if current_time - last_update_time > update_interval:
+        last_update_time = current_time
+        # Обновление скорости
+        speed_text = font.render(f"{int(angle*0.73)}", True, WHITE)
+        #speed_text = font.render(f"{int(43)}", True, WHITE)
+    screen.blit(speed_text, (480, 25))
 
     pygame.display.flip()
     clock.tick(60)  # 60 FPS
