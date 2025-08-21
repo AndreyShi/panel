@@ -91,6 +91,21 @@ switch_state_temp_oil = False
 last_update_time_temp_oil = time.time()
 update_interval_temp_oil = 1.9
 
+# Загрузка напряжения бортовой сети
+try:
+    sprite_sheet_Bort_Voltage = pygame.image.load("res/Bort_Voltage_1024_576.png").convert_alpha()
+except:
+    print("Ошибка: Bort_Voltage_1024_576.png не найден.")
+v14_5_rect = pygame.Rect(0,   0, 116, 121)
+v13_6_rect = pygame.Rect(0, 121, 116, 121)
+v12_8_rect = pygame.Rect(0, 242, 116, 121)
+v14_5_image = sprite_sheet_Bort_Voltage.subsurface(v14_5_rect)
+v13_6_image = sprite_sheet_Bort_Voltage.subsurface(v13_6_rect)
+v12_8_image = sprite_sheet_Bort_Voltage.subsurface(v12_8_rect)
+switch_state_Bort_Voltage = 145
+last_update_time_Bort_Voltage = time.time()
+update_interval_Bort_Voltage = 1.3
+
 # Загрузка шрифта времени
 main_shrift = 'Arial'
 time_font = pygame.font.SysFont(main_shrift, 46,bold=True)
@@ -235,6 +250,23 @@ while running:
         screen.blit(on_image_temp_oil, (780, 497))  # Рисуем состояние "вкл"
     else:
         screen.blit(off_image_temp_oil, (780, 497))  # Рисуем состояние "выкл"
+
+    # Отображаем напряжение бортовой сети
+    current_time = time.time()
+    if current_time - last_update_time_Bort_Voltage > update_interval_Bort_Voltage:
+        last_update_time_Bort_Voltage = current_time
+        if switch_state_Bort_Voltage == 145:
+            switch_state_Bort_Voltage = 136
+        elif switch_state_Bort_Voltage == 136:
+            switch_state_Bort_Voltage = 128
+        else:
+            switch_state_Bort_Voltage = 145
+    if switch_state_Bort_Voltage == 145:
+        screen.blit(v14_5_image, (852, 418))  
+    elif switch_state_Bort_Voltage == 136:
+        screen.blit(v13_6_image, (852, 418))  
+    else:
+        screen.blit(v12_8_image, (852, 418))
 
     pygame.display.flip()
     clock.tick(60)  # 60 FPS
