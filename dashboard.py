@@ -1,6 +1,7 @@
 import pygame
 import sys
 import time
+import datetime
 
 def scale_image(image, factor):
     """Масштабирует изображение с сохранением пропорций"""
@@ -46,9 +47,22 @@ except:
 # Загрузка стрелки уровня
 try:
     level_img = pygame.image.load("res/level_arrow_1024_576.png").convert_alpha()  # Важно!
-    level_rect = level_img.get_rect(center=(969, 111))
+    #level_rect = level_img.get_rect(center=(969, 111))
 except:
     print("Ошибка: level_arrow_1024_576.png не найден. Создаю красный прямоугольник.")
+
+# Загрузка канистры
+try:
+    canister_img = pygame.image.load("res/canister_1024_576.png").convert_alpha()
+    canister_rect = canister_img.get_rect()
+except:
+    print("Ошибка: canister_1024_576.png не найден. Создаю красный прямоугольник.")
+
+# Загрузка шрифта времени
+main_shrift = 'Arial'
+time_font = pygame.font.SysFont(main_shrift, 48,bold=True)
+# Загрузка шрифта скорости
+font = pygame.font.SysFont(main_shrift, 70,bold=False)
 
 
 angle_rmp = 125  # Начальный угол
@@ -62,8 +76,9 @@ toup = True
 
 toup_rmp = True
 
-# Добавление текста (скорость, RPM)
-font = pygame.font.SysFont('Arial', 80)
+fuel_y = 0
+todown_fuel = True
+
 # Таймеры
 last_update_time = time.time()
 update_interval = 0.25  # Обновлять скорость каждые 0.5 секунды
@@ -103,8 +118,42 @@ while running:
     rotated_rmp = pygame.transform.rotate(rmp_img, -1 * (angle_rmp + 15))  # 15...130
     new_rect = rotated_rmp.get_rect(center=rmp_rect.center)
     screen.blit(rotated_rmp, new_rect.topleft)
+    # Рисуем канистру
+    screen.blit(canister_img, (954, 109))
+    # Рисуем бензин в канистре
+    # Вычисляем высоту бензина
+    fuel_level = 1 - (fuel_y / 94)
+    GASOLINE_COLOR = (43, 0, 181)  # Синий для бензина
+    current_fuel_height = int(canister_img.get_height() * fuel_level) 
+    # 1. Создаём поверхность для бензина
+    
+    gasoline_surface = pygame.Surface(canister_img.get_size(), pygame.SRCALPHA)
+    # 2. Закрашиваем область бензина
+    fuel_area = pygame.Rect(0, canister_img.get_height() - current_fuel_height, 
+                          canister_img.get_width(), current_fuel_height)
+    pygame.draw.rect(gasoline_surface, GASOLINE_COLOR, fuel_area)
+    # 3. Используем канистру как маску - бензин появится только там, где канистра непрозрачна
+    gasoline_surface.blit(canister_img, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
+
+    # 4. Рисуем бензин на экране
+    screen.blit(gasoline_surface, (954, 109))
+    
 
     # Изменение уровня
+    #fuel_y =  (fuel_y + 1 ) % 94 #MIN_Y + (MAX_Y - MIN_Y) * (1 - fuel_level)
+    if fuel_y < 93 and todown_fuel == True:
+        fuel_y = (fuel_y + 1) % 94
+    elif fuel_y == 0:
+        todown_fuel = True
+    else:
+        fuel_y = (fuel_y - 1) % 94
+        todown_fuel = False
+    screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
+
+    #Отображение времени
+    current_time = datetime.datetime.now()
+    time_text = time_font.render(current_time.strftime("%H:%M"), True, (160, 160, 160))
+    screen.blit(time_text, (668, 75))  # Правый верхний угол
 
         # --- Обновление данных (реже, чем кадры) ---
     current_time = time.time()
