@@ -24,43 +24,81 @@ try:
     background = pygame.image.load("res/dashboard_1024_576.png").convert()  # Фон
     background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 except:
-    print("Ошибка: dashboard.jpg не найден. Использую чёрный фон.")
+    print("Ошибка: dashboard_1024_576.png не найден.")
 
 # Загрузка стрелки скорости
 try:
     needle_img = pygame.image.load("res/arrowkmh_1024_576.png").convert_alpha()  # Важно!
-    # Уменьшаем в 0.8 раза (50% от оригинала)
-    # needle_img = scale_image(needle_img, 0.4)
     needle_rect = needle_img.get_rect(center=(294, 242))
 except:
-    print("Ошибка: arrowkmh_1024_576.png не найден. Создаю красный прямоугольник.")
+    print("Ошибка: arrowkmh_1024_576.png не найден.")
 
 # Загрузка стрелки RMP
 try:
     rmp_img = pygame.image.load("res/arrowRMP_1024_576.png").convert_alpha()  # Важно!
     rmp_rect = rmp_img.get_rect(center=(294, 242))
 except:
-    print("Ошибка: arrowRMP_1024_576.png не найден. Создаю красный прямоугольник.")
+    print("Ошибка: arrowRMP_1024_576.png не найден.")
 
 # Загрузка стрелки уровня
 try:
     level_img = pygame.image.load("res/level_arrow_1024_576.png").convert_alpha()  # Важно!
-    #level_rect = level_img.get_rect(center=(969, 111))
 except:
-    print("Ошибка: level_arrow_1024_576.png не найден. Создаю красный прямоугольник.")
+    print("Ошибка: level_arrow_1024_576.png не найден.")
 
 # Загрузка канистры
 try:
     canister_img = pygame.image.load("res/canister_1024_576.png").convert_alpha()
-    canister_rect = canister_img.get_rect()
 except:
-    print("Ошибка: canister_1024_576.png не найден. Создаю красный прямоугольник.")
+    print("Ошибка: canister_1024_576.png не найден.")
+
+# Загрузка вентилятора
+try:
+    sprite_sheet = pygame.image.load("res/cooler_1024_576.png").convert_alpha()
+except:
+    print("Ошибка: cooler_1024_576.png не найден.")
+on_rect = pygame.Rect(0, 0, 37, 37)
+off_rect = pygame.Rect(0, 37, 37, 37)
+on_image = sprite_sheet.subsurface(on_rect)
+off_image = sprite_sheet.subsurface(off_rect)
+switch_state_cooler = False
+last_update_time_cooler = time.time()
+update_interval_cooler = 0.7
+
+# Загрузка масленки
+try:
+    sprite_sheet_maslenka = pygame.image.load("res/maslenka_1024_576.png").convert_alpha()
+except:
+    print("Ошибка: maslenka_1024_576.png не найден.")
+on_rect_maslenka = pygame.Rect(0, 0, 59, 23)
+off_rect_maslenka = pygame.Rect(0, 23, 59, 23)
+on_image_maslenka = sprite_sheet_maslenka.subsurface(on_rect_maslenka)
+off_image_maslenka = sprite_sheet_maslenka.subsurface(off_rect_maslenka)
+switch_state_maslenka = False
+last_update_time_maslenka = time.time()
+update_interval_maslenka = 0.9
+
+# Загрузка температуры масла
+try:
+    sprite_sheet_temp_oil = pygame.image.load("res/temp_oil_1024_576.png").convert_alpha()
+except:
+    print("Ошибка: temp_oil_1024_576.png не найден.")
+on_rect_temp_oil = pygame.Rect(0, 0, 43, 43)
+off_rect_temp_oil = pygame.Rect(0, 43, 43, 43)
+on_image_temp_oil = sprite_sheet_temp_oil.subsurface(on_rect_temp_oil)
+off_image_temp_oil = sprite_sheet_temp_oil.subsurface(off_rect_temp_oil)
+switch_state_temp_oil = False
+last_update_time_temp_oil = time.time()
+update_interval_temp_oil = 1.9
 
 # Загрузка шрифта времени
 main_shrift = 'Arial'
-time_font = pygame.font.SysFont(main_shrift, 48,bold=True)
+time_font = pygame.font.SysFont(main_shrift, 46,bold=True)
+
 # Загрузка шрифта скорости
 font = pygame.font.SysFont(main_shrift, 70,bold=False)
+
+
 
 
 angle_rmp = 125  # Начальный угол
@@ -156,10 +194,47 @@ while running:
     current_time = time.time()
     if current_time - last_update_time > update_interval:
         last_update_time = current_time
-        # Обновление скорости
         speed_text = font.render(f"{int(angle*0.73)}", True, WHITE)
-        #speed_text = font.render(f"{int(43)}", True, WHITE)
     screen.blit(speed_text, (480, 25))
+
+    # Отображаем вентилятор
+    current_time = time.time()
+    if current_time - last_update_time_cooler > update_interval_cooler:
+        last_update_time_cooler = current_time
+        if switch_state_cooler:
+            switch_state_cooler = False
+        else:
+            switch_state_cooler = True
+    if switch_state_cooler:
+        screen.blit(on_image, (641, 503))  # Рисуем состояние "вкл"
+    else:
+        screen.blit(off_image, (641, 503))  # Рисуем состояние "выкл"
+
+    # Отображаем масленку
+    current_time = time.time()
+    if current_time - last_update_time_maslenka > update_interval_maslenka:
+        last_update_time_maslenka = current_time
+        if switch_state_maslenka:
+            switch_state_maslenka = False
+        else:
+            switch_state_maslenka = True
+    if switch_state_maslenka:
+        screen.blit(on_image_maslenka, (700, 514))  # Рисуем состояние "вкл"
+    else:
+        screen.blit(off_image_maslenka, (700, 514))  # Рисуем состояние "выкл"
+
+    # Отображаем температуру масла
+    current_time = time.time()
+    if current_time - last_update_time_temp_oil > update_interval_temp_oil:
+        last_update_time_temp_oil = current_time
+        if switch_state_temp_oil:
+            switch_state_temp_oil = False
+        else:
+            switch_state_temp_oil = True
+    if switch_state_temp_oil:
+        screen.blit(on_image_temp_oil, (780, 497))  # Рисуем состояние "вкл"
+    else:
+        screen.blit(off_image_temp_oil, (780, 497))  # Рисуем состояние "выкл"
 
     pygame.display.flip()
     clock.tick(60)  # 60 FPS
