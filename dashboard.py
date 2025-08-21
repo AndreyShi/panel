@@ -25,8 +25,6 @@ try:
     background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 except:
     print("Ошибка: dashboard.jpg не найден. Использую чёрный фон.")
-    background = pygame.Surface((WIDTH, HEIGHT))
-    background.fill((0, 0, 0))
 
 # Загрузка стрелки скорости
 try:
@@ -124,7 +122,7 @@ while running:
 
     # Рисуем бензин в канистре
     # Вычисляем высоту бензина
-    fuel_level = 1 - (fuel_y / 94)
+    fuel_level = 0.98 - (fuel_y / 93)
     GASOLINE_COLOR = (43, 0, 181)  # Синий для бензина
     current_fuel_height = int(canister_img.get_height() * fuel_level) 
     # 1. Создаём поверхность для бензина  
