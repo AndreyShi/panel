@@ -2,6 +2,19 @@ import pygame
 import sys
 import time
 import datetime
+import os
+
+def is_raspberry_pi():
+    """Проверяет, работает ли на Raspberry Pi"""
+    try:
+        with open('/proc/cpuinfo', 'r') as f:
+            for line in f:
+                if line.startswith('Model'):
+                    if 'Raspberry Pi' in line:
+                        return True
+    except:
+        pass
+    return False
 
 def scale_image(image, factor):
     """Масштабирует изображение с сохранением пропорций"""
@@ -16,7 +29,16 @@ WHITE = (255, 255, 255)
 WIDTH, HEIGHT = 1024, 576  # разрешение экрана в linux
 # Инициализация
 pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+# Настройка режима
+if is_raspberry_pi():
+    info = pygame.display.Info()
+    screen = pygame.display.set_mode((info.current_w, info.current_h), pygame.FULLSCREEN)
+    pygame.mouse.set_visible(False)
+else:
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.mouse.set_visible(True)
+
 pygame.display.set_caption("Приборная панель")
 
 # Загрузка фона
@@ -138,6 +160,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:  # Выход по ESC
+                running = False
 
     # Обновление угла стрелки Скорости(имитация данных)
     if angle < 119 and toup == True:
