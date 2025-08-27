@@ -3,6 +3,8 @@ import sys
 import time
 import datetime
 import os
+import threading
+from hardware import polling
 
 def is_raspberry_pi():
     """Проверяет, работает ли на Raspberry Pi"""
@@ -21,6 +23,11 @@ def scale_image(image, factor):
     new_size = (int(image.get_width() * factor), 
                 int(image.get_height() * factor))
     return pygame.transform.scale(image, new_size)
+
+def check_flag()->bool:
+    return running
+
+
 # Цвета
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -156,6 +163,10 @@ todown_fuel = True
 last_update_time = time.time()
 update_interval = 0.25  # Обновлять скорость каждые 0.5 секунды
 speed_text = font.render(f"{int(angle*0.73)}", True, WHITE)
+
+thread = threading.Thread(target=polling, name="poll_hw",args=(check_flag,))
+thread.start()
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -296,5 +307,6 @@ while running:
     pygame.display.flip()
     clock.tick(60)  # 60 FPS
 
+thread.join()
 pygame.quit()
 sys.exit()
