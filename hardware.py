@@ -6,7 +6,8 @@ from i2c import *
 
 def polling(func):
     # Теперь smbus2 доступен в любой системе
-    bus = smbus2.SMBus(1)  # Работает и на Pi, и на Windows
+    I2cBus = smbus2.SMBus(1)  # Работает и на Pi, и на Windows
     while func():
-        bus.read_byte_data(1,2)
+        value, voltage = I2cBus.read_differential_a0_a1()
+        print("value: ",value,"voltage: ",voltage)
         time.sleep(1)
