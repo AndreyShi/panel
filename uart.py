@@ -1,3 +1,4 @@
+import time
 try:
     import serial
     class GPSReader:
