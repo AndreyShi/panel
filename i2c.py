@@ -18,7 +18,17 @@ try:
         def read_differential_a0_a1(self):
             # Настройка конфигурации
             OS = 1        # Однократное преобразование
-            MUX = 0b000   # AIN0 vs AIN1 (дифференциальный)
+            # Дифференциальные режимы:
+            #MUX = 0b000  # AIN0 vs AIN1 (дифф)
+            #MUX = 0b001  # AIN0 vs AIN3 (дифф)
+            #MUX = 0b010  # AIN1 vs AIN3 (дифф)
+            #MUX = 0b011  # AIN2 vs AIN3 (дифф)
+            # Single-Ended режимы:
+            #MUX = 0b100  # AIN0 vs GND
+            #MUX = 0b101  # AIN1 vs GND  
+            #MUX = 0b110  # AIN2 vs GND
+            #MUX = 0b111  # AIN3 vs GND
+            MUX = 0b100   # AIN0 vs AIN1 (дифференциальный)
             PGA = 0b010   # ±2.048V
             MODE = 1      # Однократный режим
             DR = 0b100    # 128 SPS
