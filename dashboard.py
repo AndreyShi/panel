@@ -39,8 +39,9 @@ pygame.init()
 
 # Настройка режима
 if is_raspberry_pi():
-    info = pygame.display.Info()
-    screen = pygame.display.set_mode((info.current_w, info.current_h), pygame.FULLSCREEN)
+    #info = pygame.display.Info()
+    #screen = pygame.display.set_mode((info.current_w, info.current_h), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.mouse.set_visible(False)
 else:
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
