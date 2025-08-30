@@ -1,125 +1,81 @@
 import time
-try:
-    import serial
-    class GPSReader:
-        def __init__(self, port='/dev/ttyS0'):
-            self.ser = serial.Serial(port, 9600, timeout=2)  # Увеличили timeout
-            self.ser.flushInput()
-            print(f"GPSReader инициализирован на порту {port}")
+import serial
+import platform
+
+class uart:
+    def __init__(self):
+        system = platform.system()
+        port = ''
+        if system == "Windows":
+            port = 'COM5'
+        elif system == "Linux":
+            port = '/dev/ttyS0'
+
+        try:
+            self.ser = serial.Serial(port, 9600, timeout=0.1)  #0.1 для каждого символа
+            self.buffer = ""
+            print(f"GPSReader инициализирована на порту {port}")
+        except serial.SerialException as e:
+            print(f"Ошибка открытия порта {port}: {e}")
+            self.ser = None
+        except Exception as e:
+            print(f"Неожиданная ошибка: {e}")
+            self.ser = None
         
-        def get_speed(self):
-            """Чтение скорости с диагностикой"""
-            try:
-                # Читаем сырые данные
-                raw_data = self.ser.readline()
-                if not raw_data:
-                    print("Нет данных от порта (пустой readline)")
-                    return None
-                
-                # Декодируем
-                try:
-                    line = raw_data.decode('utf-8', errors='ignore').strip()
-                except UnicodeDecodeError:
-                    print("Ошибка декодирования UTF-8")
-                    return None
-                
-                if not line:
-                    print("Получена пустая строка")
-                    return None
-                    
-                print(f"Получено: {line}")  # Диагностика
-                
-                # Парсим только GPRMC
-                if line.startswith('$GPRMC'):
-                    parts = line.split(',')
-                    print(f"Части: {parts}")  # Диагностика
-                    
-                    # Проверяем длину и статус
-                    if len(parts) < 8:
-                        print("Слишком мало полей в GPRMC")
-                        return None
-                    
-                    if parts[2] != 'A':
-                        print(f"Невалидные данные, статус: {parts[2]}")
-                        return None
-                    
-                    # Проверяем поле скорости
-                    if not parts[7]:
-                        print("Поле скорости пустое")
-                        return None
-                    
-                    # Пытаемся конвертировать
-                    try:
-                        speed_knots = float(parts[7])
-                        speed_kmh = speed_knots * 1.852
-                        print(f"Успешно: {speed_kmh:.1f} км/ч")
-                        return speed_kmh
-                    except ValueError:
-                        print(f"Ошибка конвертации скорости: {parts[7]}")
-                        return None
-                
+    def task_GPSReader(self,func_exit):
+        while func_exit() and self.ser is not None:
+            data = self.ser.read(self.ser.in_waiting or 1).decode('ascii', errors='ignore')
+            self.buffer += data
+
+            lines = self.buffer.splitlines(keepends=True) # Делим, сохраняя символы \n
+            for line in lines:
+                if line.endswith('\n'):
+                    # Нашли целую строку
+                    full_line = line.strip()
+                    if full_line.startswith('$GPRMC') and self.validate_checksum(full_line):
+                        print(full_line)
+                        #break
                 else:
-                    print(f"Не GPRMC: {line[:10]}...")
-                    return None
-                    
-            except Exception as e:
-                print(f"Исключение в get_speed: {e}")
-                return None
-        
-        def debug_read_all(self, duration=10):
-            """Чтение всех данных для диагностики"""
-            print(f"\nЧтение всех данных в течение {duration} секунд:")
-            start_time = time.time()
-            
-            while time.time() - start_time < duration:
-                try:
-                    raw_data = self.ser.readline()
-                    if raw_data:
-                        line = raw_data.decode('utf-8', errors='ignore').strip()
-                        print(f"RAW: {line}")
-                except:
-                    pass
-            
-            print("Диагностика завершена\n")
-        
-        def close(self):
-            if self.ser.is_open:
-                self.ser.close()
-                print("Порт закрыт")
-except ImportError:
-    # Заглушка для случая, когда serial не установлен
-    import time
-    import random
-    
-    class GPSReader:
-        def __init__(self, port='/dev/ttyS0'):
-            self.port = port
-            self.is_open = True
-            print(f"Заглушка GPSReader инициализирована на порту {port}")
-        
-        def get_speed(self):
-            """Имитация чтения скорости"""
-            if not self.is_open:
-                return None
-            
-            # Имитация задержки GPS модуля
-            time.sleep(0.5)
-            
-            # С вероятностью 70% возвращаем случайную скорость
-            # С вероятностью 30% возвращаем None (имитация потери сигнала)
-            if random.random() < 0.7:
-                # Случайная скорость от 0 до 120 км/ч
-                speed_kmh = random.uniform(0, 120)
-                #print(f"Заглушка: возвращаем скорость {speed_kmh:.1f} км/ч")
-                return speed_kmh
+                    # Последняя строка без \n - это начало новой, неполной строки.
+                    buffer = line
+                    break
             else:
-                #print("Заглушка: сигнал GPS потерян")
-                return None
+                # Если for не нашел ни одной полной строки, очищаем буфер
+                # (или оставляем его, если ожидаются очень длинные строки)
+                buffer = ""
+            time.sleep(0.5)
+        return None
         
-        def close(self):
-            """Закрытие заглушки"""
-            self.is_open = False
-            print("Заглушка порта закрыта")
-        def debug_read_all(self, duration=10):
+    def close(self):
+        print("порт закрыт")
+    def debug_read_all(self, duration=10):
+        return False
+    def validate_checksum(self,nmea_sentence: str) -> bool:
+        # Проверяем базовую структуру строки
+        if not nmea_sentence.startswith('$') or '*' not in nmea_sentence:
+            return False
+
+        try:
+            # Разделяем строку на данные и контрольную сумму
+            data_part, checksum_received = nmea_sentence.split('*', 1)
+            # Убираем начальный '$' и вычисляем XOR для оставшейся части
+            data_to_check = data_part[1:]
+            
+            # Инициализируем нулем
+            calculated_checksum = 0
+            # Последовательно применяем XOR к каждому символу
+            for char in data_to_check:
+                calculated_checksum ^= ord(char)
+            
+            # Преобразуем вычисленную сумму в hex, обрезаем '0x' и делаем верхний регистр
+            # Добавляем ведущий ноль, если результат однозначный
+            calculated_checksum_hex = f"{calculated_checksum:02X}"
+            
+            # Сравниваем с полученной контрольной суммой (первые 2 символа после '*')
+            # Обрезаем до 2 символов на случай, если в строке есть мусор
+            return calculated_checksum_hex == checksum_received[0:2]
+            
+        except (ValueError, IndexError):
+            # Если что-то пошло не так при разборе (например, нет данных после '*')
             return False
         
