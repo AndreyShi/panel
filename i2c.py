@@ -7,8 +7,8 @@ try:
     class i2c:
         def __init__(self, bus_number=1):
             self.bus = smbus2.SMBus(bus_number)
-        def bus_task(self, func_exit):
-            while func_exit():
+        def bus_task(self, running):
+            while running[0]:
                 self.task_ADS1115()
                 time.sleep(0.5)
         def task_ADS1115(self, address=0x48):            
@@ -68,8 +68,8 @@ except ImportError:
             self.bus_number = bus_number
             self.devices = {}  # Виртуальные устройства I2C
             print(f"🖥 i2c: виртуальная шина {bus_number}")
-        def bus_task(self, func_exit):
-            while func_exit():
+        def bus_task(self, running):
+            while running[0]:
                 self.task_ADS1115()
                 time.sleep(1)
         def task_ADS1115(self, address=0x48):

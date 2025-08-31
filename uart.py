@@ -22,8 +22,8 @@ class uart:
             print(f"Неожиданная ошибка: {e}")
             self.ser = None
         
-    def task_GPSReader(self,func_exit):
-        while func_exit() and self.ser is not None:
+    def task_GPSReader(self,running):
+        while running[0] and self.ser is not None:
             data = self.ser.read(self.ser.in_waiting or 1).decode('ascii', errors='ignore')
             self.buffer += data
 

@@ -21,7 +21,7 @@ def scale_image(image, factor):
                 int(image.get_height() * factor))
     return pygame.transform.scale(image, new_size)
 
-def task_Dashboard(func_exit, func_set, arguments):
+def task_Dashboard(running, arguments):
     # Цвета
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
@@ -163,13 +163,13 @@ def task_Dashboard(func_exit, func_set, arguments):
 
 
 
-    while func_exit():
+    while running[0]:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                func_set()
+                running[0] = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Выход по ESC
-                    func_set()
+                    running[0] = False
 
         # Обновление угла стрелки Скорости(имитация данных)
         if angle < 119 and toup == True:
