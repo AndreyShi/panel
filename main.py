@@ -17,7 +17,7 @@ def main():
     running = [True]
 
     i2c_devices = i2c.i2c()
-    thread_i2c = threading.Thread(target=i2c_devices.bus_task, name="thread_i2c",args=(running, ))
+    thread_i2c = threading.Thread(target=i2c_devices.task_I2cbus, name="thread_i2c",args=(running, ))
     thread_i2c.start()
    
     uart_device = uart.uart()
