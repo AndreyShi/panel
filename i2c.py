@@ -61,7 +61,6 @@ try:
             voltage = (value * 2.048) / 32767.0
             print("I2c value: ",value,"voltage: ",voltage)
 except ImportError:
-    print("⚠ smbus2 недоступен, используется эмуляция")
     # Создаем mock-версию smbus2
     class i2c:
         def __init__(self, bus_number=1):
