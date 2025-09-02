@@ -242,7 +242,7 @@ def task_Dashboard(running, arguments,que):
             else:
                 fuel_y = (fuel_y - 1) % 94
                 todown_fuel = False
-        if fuel_y_old - fuel_y < 0.1:
+        if fuel_y_old - fuel_y < 0.2:
             screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
             print(fuel_y_old - fuel_y,"<")
             fuel_y_old = fuel_y
