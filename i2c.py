@@ -1,4 +1,5 @@
 import time
+import math
 
 try:
     # Пытаемся импортировать настоящий smbus2
@@ -59,7 +60,10 @@ try:
                 
             # Конвертация в напряжение
             voltage = (value * 2.048) / 32767.0
-            print("I2c value: ",value,"voltage: ",voltage)
+            
+            # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
+            R2 = 430 * (voltage/(3.3 - voltage))
+            print(f"I2c value: {value}, voltage: {voltage:.2f}, R2: {R2:.2f}")
 except ImportError:
     # Создаем mock-версию smbus2
     class i2c:
@@ -72,4 +76,4 @@ except ImportError:
                 self.task_ADS1115()
                 time.sleep(1)
         def task_ADS1115(self, address=0x48):
-                print("i2c: виртуальная шина value: ",7,"voltage: ",7)
+                print(f"I2c value: {math.pi:.2f}, voltage: {math.pi:.2f}, R2: {math.pi:.2f}")
