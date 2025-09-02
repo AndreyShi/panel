@@ -21,7 +21,7 @@ def scale_image(image, factor):
                 int(image.get_height() * factor))
     return pygame.transform.scale(image, new_size)
 
-def task_Dashboard(running, arguments):
+def task_Dashboard(running, arguments,que):
     # Цвета
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
@@ -223,13 +223,20 @@ def task_Dashboard(running, arguments):
         
         # Изменение уровня
         #fuel_y =  (fuel_y + 1 ) % 94 #MIN_Y + (MAX_Y - MIN_Y) * (1 - fuel_level)
-        if fuel_y < 93 and todown_fuel == True:
-            fuel_y = (fuel_y + 1) % 94
-        elif fuel_y == 0:
-            todown_fuel = True
+        if que[0] is not None:
+            if que[0].empty():
+                pass
+            else:
+                fuel_y = (que[0].get(timeout=1.0) * (94 / 300)) % 94
+                que[0].task_done()
         else:
-            fuel_y = (fuel_y - 1) % 94
-            todown_fuel = False
+            if fuel_y < 93 and todown_fuel == True:
+                fuel_y = (fuel_y + 1) % 94
+            elif fuel_y == 0:
+                todown_fuel = True
+            else:
+                fuel_y = (fuel_y - 1) % 94
+                todown_fuel = False
         screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
 
         #Отображение времени

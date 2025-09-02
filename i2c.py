@@ -8,11 +8,11 @@ try:
     class i2c:
         def __init__(self, bus_number=1):
             self.bus = smbus2.SMBus(bus_number)
-        def task_I2cbus(self, running):
+        def task_I2cbus(self, running,que):
             while running[0]:
-                self.task_ADS1115()
+                self.task_ADS1115(que)
                 time.sleep(0.5)
-        def task_ADS1115(self, address=0x48):            
+        def task_ADS1115(self, que, address=0x48):            
             REG_CONVERSION = 0x00
             REG_CONFIG = 0x01
             # Настройка конфигурации
@@ -60,10 +60,14 @@ try:
                 
             # Конвертация в напряжение
             voltage = (value * 2.048) / 32767.0
-            
+
             # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
             R2 = 430 * (voltage/(3.3 - voltage))
-            print(f"I2c value: {value}, voltage: {voltage:.2f}, R2: {R2:.2f}")
+            print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}")
+            try:
+                que[0].put(R2,timeout = 0.5)
+            except Full:
+                print("que[0].put - очередь занята")
 except ImportError:
     # Создаем mock-версию smbus2
     class i2c:
@@ -71,7 +75,8 @@ except ImportError:
             self.bus_number = bus_number
             self.devices = {}  # Виртуальные устройства I2C
             print(f"🖥 i2c: виртуальная шина {bus_number}")
-        def task_I2cbus(self, running):
+        def task_I2cbus(self, running, que):
+            que[0] = None  
             while running[0]:
                 self.task_ADS1115()
                 time.sleep(1)

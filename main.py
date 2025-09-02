@@ -4,6 +4,7 @@ import i2c
 import uart 
 import dashboard
 import argparse
+from queue import Queue
 
 
 def main():
@@ -15,16 +16,17 @@ def main():
         arguments = '-w'
 
     running = [True]
+    que = [Queue(1)] # que[0] - очередь для датчика уровня топлива
 
     i2c_devices = i2c.i2c()
-    thread_i2c = threading.Thread(target=i2c_devices.task_I2cbus, name="thread_i2c",args=(running, ))
+    thread_i2c = threading.Thread(target=i2c_devices.task_I2cbus, name="thread_i2c",args=(running, que, ))
     thread_i2c.start()
    
     uart_device = uart.uart()
     thread_uart = threading.Thread(target=uart_device.task_GPSReader, name="thread_uart",args=(running, ))
     thread_uart.start()
 
-    thread_dashboard = threading.Thread(target=dashboard.task_Dashboard, name="thread_dasboard",args=(running, arguments, ))
+    thread_dashboard = threading.Thread(target=dashboard.task_Dashboard, name="thread_dasboard",args=(running, arguments, que ))
     thread_dashboard.start()
 
     thread_dashboard.join()
