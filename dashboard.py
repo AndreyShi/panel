@@ -208,7 +208,7 @@ def task_Dashboard(running, arguments,que):
 
         # Рисуем бензин в канистре
         # Вычисляем высоту бензина
-        fuel_level = 0.98 - (fuel_y / 93)
+        fuel_level = 0.99 - (fuel_y / 93)
         GASOLINE_COLOR = (43, 0, 181)  # Синий для бензина
         current_fuel_height = int(canister_img.get_height() * fuel_level) 
         # 1. Создаём поверхность для бензина  
