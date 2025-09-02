@@ -154,6 +154,7 @@ def task_Dashboard(running, arguments,que):
     toup_rmp = True
 
     fuel_y = 0
+    fuel_y_old = 0
     todown_fuel = True
 
     # Таймеры
@@ -220,7 +221,9 @@ def task_Dashboard(running, arguments,que):
         gasoline_surface.blit(canister_img, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
         # 4. Рисуем бензин на экране
         screen.blit(gasoline_surface, (954, 109))
-        
+        if fuel_y_old - fuel_y > 0:
+            screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
+            fuel_y_old = fuel_y
         # Изменение уровня
         #fuel_y =  (fuel_y + 1 ) % 94 #MIN_Y + (MAX_Y - MIN_Y) * (1 - fuel_level)
         if que[0] is not None:
@@ -237,7 +240,9 @@ def task_Dashboard(running, arguments,que):
             else:
                 fuel_y = (fuel_y - 1) % 94
                 todown_fuel = False
-        screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
+        if fuel_y_old - fuel_y < 0:
+            screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
+            fuel_y_old = fuel_y
 
         #Отображение времени
         current_time = datetime.datetime.now()

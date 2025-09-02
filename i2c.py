@@ -11,7 +11,7 @@ try:
         def task_I2cbus(self, running,que):
             while running[0]:
                 self.task_ADS1115(que)
-                #time.sleep(0.5)
+                #time.sleep(0.5)  # задержку отключили и стало более отзывчевее меняться уровень топлива на экране
         def task_ADS1115(self, que, address=0x48):            
             REG_CONVERSION = 0x00
             REG_CONFIG = 0x01
