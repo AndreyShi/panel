@@ -1,5 +1,6 @@
 import time
 import math
+from queue import Queue, Full 
 
 try:
     # Пытаемся импортировать настоящий smbus2
