@@ -227,7 +227,7 @@ def task_Dashboard(running, arguments,que):
             if que[0].empty():
                 pass
             else:
-                fuel_y = (que[0].get(timeout=1.0) * (94 / 300)) % 94
+                fuel_y = ((300 - que[0].get(timeout=1.0)) * (94 / 300)) % 94
                 que[0].task_done()
         else:
             if fuel_y < 93 and todown_fuel == True:
