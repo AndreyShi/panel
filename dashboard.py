@@ -224,7 +224,7 @@ def task_Dashboard(running, arguments,que):
         if fuel_y_old - fuel_y > 0:
             screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
             fuel_y_old = fuel_y
-            print(fuel_y_old - fuel_y,">")
+            #print(fuel_y_old - fuel_y,">")
         # Изменение уровня
         #fuel_y =  (fuel_y + 1 ) % 94 #MIN_Y + (MAX_Y - MIN_Y) * (1 - fuel_level)
         if que[0] is not None:
@@ -241,10 +241,10 @@ def task_Dashboard(running, arguments,que):
             else:
                 fuel_y = (fuel_y - 1) % 94
                 todown_fuel = False
-        if fuel_y_old - fuel_y < 0:
+        if fuel_y_old - fuel_y <= 0:
             screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
             fuel_y_old = fuel_y
-            print(fuel_y_old - fuel_y,"<")
+            #print(fuel_y_old - fuel_y,"<")
         #Отображение времени
         current_time = datetime.datetime.now()
         time_text = time_font.render(current_time.strftime("%H:%M"), True, (160, 160, 160))
