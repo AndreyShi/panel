@@ -11,7 +11,7 @@ try:
         def task_I2cbus(self, running,que):
             while running[0]:
                 self.task_ADS1115(que)
-                time.sleep(0.5)
+                #time.sleep(0.5)
         def task_ADS1115(self, que, address=0x48):            
             REG_CONVERSION = 0x00
             REG_CONFIG = 0x01
@@ -63,7 +63,7 @@ try:
 
             # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
             R2 = 430 * (voltage/(3.3 - voltage))
-            print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}")
+            #print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}")
             try:
                 que[0].put(R2,timeout = 0.5)
             except Full:
