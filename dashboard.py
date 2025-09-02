@@ -221,7 +221,7 @@ def task_Dashboard(running, arguments,que):
         gasoline_surface.blit(canister_img, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
         # 4. Рисуем бензин на экране
         screen.blit(gasoline_surface, (954, 109))
-        if fuel_y_old - fuel_y > 0.05:
+        if fuel_y_old - fuel_y > 0.2:
             screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
             print(fuel_y_old - fuel_y,">")
             fuel_y_old = fuel_y
