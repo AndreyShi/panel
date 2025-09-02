@@ -223,7 +223,7 @@ def task_Dashboard(running, arguments,que):
         screen.blit(gasoline_surface, (954, 109))
         if int(fuel_y_old - fuel_y) > 0:
             screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
-            print(fuel_y_old - fuel_y,">")
+            #print(fuel_y_old - fuel_y,">")
             fuel_y_old = fuel_y
 
         # Изменение уровня
@@ -232,7 +232,7 @@ def task_Dashboard(running, arguments,que):
             if que[0].empty():
                 pass
             else:
-                fuel_y = ((300 - que[0].get(timeout=1.0)) * (94 / 300)) % 94
+                fuel_y = int((300 - que[0].get(timeout=1.0)) * (94 / 300)) % 94
                 que[0].task_done()
         else:
             if fuel_y < 93 and todown_fuel == True:
@@ -242,9 +242,10 @@ def task_Dashboard(running, arguments,que):
             else:
                 fuel_y = (fuel_y - 1) % 94
                 todown_fuel = False
+        #если уровень идет вверх ,то пропускаем отрисовку уровня , если вниз то рисуем
         if int(fuel_y_old - fuel_y) <= 0:
             screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
-            print(fuel_y_old - fuel_y,"<")
+            #print(fuel_y_old - fuel_y,"<")
             fuel_y_old = fuel_y
 
         #Отображение времени
