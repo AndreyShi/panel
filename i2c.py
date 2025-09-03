@@ -1,6 +1,7 @@
 import time
 import math
 from queue import Queue, Full 
+from collections import deque
 
 try:
     # Пытаемся импортировать настоящий smbus2
@@ -9,7 +10,8 @@ try:
     class i2c:
         def __init__(self, bus_number=1):
             self.bus = smbus2.SMBus(bus_number)
-        def task_I2cbus(self, running,que):
+            self.deq = deque(maxlen=5)
+        def task_I2cbus(self, running, que):         
             while running[0]:
                 self.task_ADS1115(que)
                 #time.sleep(0.5)  # задержку отключили и стало более отзывчевее меняться уровень топлива на экране
@@ -64,9 +66,11 @@ try:
 
             # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
             R2 = 430 * (voltage/(3.3 - voltage))
-            #print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}")
+            self.deq.append(R2)
+            R2_avg = sum(self.deq) / len(self.deq) if self.deq else 0
+            #print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}, R2_avg: {R2_avg:.3f}")
             try:
-                que[0].put(R2,timeout = 0.5)
+                que[0].put(R2_avg, timeout = 0.5)
             except Full:
                 print("que[0].put - очередь занята")
 except ImportError:
