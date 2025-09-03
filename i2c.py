@@ -57,9 +57,9 @@ try:
                     print("que[0].put - очередь занята")
                 #time.sleep(0.5)  # задержку отключили и стало более отзывчевее меняться уровень топлива на экране
         def read_adc(self, config, address):
-            REG_CONVERSION = 0x00
-            REG_CONFIG = 0x01
-            with self.lock:    # блокируем доступ к шине                               
+            with self.lock:    # блокируем доступ к шине
+                REG_CONVERSION = 0x00
+                REG_CONFIG = 0x01                               
                 config_bytes = [config >> 8, config & 0xFF]
                 self.bus.write_i2c_block_data(address, REG_CONFIG, config_bytes)
                 time.sleep(0.01)# ждем преобразования АЦП
