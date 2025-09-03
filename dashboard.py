@@ -1,6 +1,7 @@
 import pygame
 import time
 import datetime
+from datetime import datetime
 
 
 def is_raspberry_pi():
@@ -154,8 +155,7 @@ def task_Dashboard(running, arguments,que):
     toup_rmp = True
 
     fuel_y = 0
-    fuel_y_old = 0
-    todown_fuel = True
+    R2 = 0
 
     # Таймеры
     last_update_time = time.time()
@@ -206,9 +206,14 @@ def task_Dashboard(running, arguments,que):
         # Рисуем канистру
         screen.blit(canister_img, (954, 109))
 
+        # Изменение уровня
+        if que[0]: #очередь пуста - значит пропускаем, ничего не ждем
+            R2 = que[0].get()
+            que[0].task_done()
+        fuel_y = int((300 - R2) * (94 / 300)) % 94   
         # Рисуем бензин в канистре
         # Вычисляем высоту бензина
-        fuel_level = 0.99 - (fuel_y / 93)
+        fuel_level = 0.98 - (fuel_y / 93)
         GASOLINE_COLOR = (43, 0, 181)  # Синий для бензина
         current_fuel_height = int(canister_img.get_height() * fuel_level) 
         # 1. Создаём поверхность для бензина  
@@ -221,35 +226,10 @@ def task_Dashboard(running, arguments,que):
         gasoline_surface.blit(canister_img, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
         # 4. Рисуем бензин на экране
         screen.blit(gasoline_surface, (954, 109))
-        if fuel_y_old - fuel_y > 0:
-            screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
-            #print(fuel_y_old - fuel_y,">")
-            fuel_y_old = fuel_y
-
-        # Изменение уровня
-        #fuel_y =  (fuel_y + 1 ) % 94 #MIN_Y + (MAX_Y - MIN_Y) * (1 - fuel_level)
-        if que[0] is not None:
-            if que[0].empty():
-                pass
-            else:
-                fuel_y = int((300 - que[0].get(timeout=1.0)) * (94 / 300)) % 94
-                que[0].task_done()
-        else:
-            if fuel_y < 93 and todown_fuel == True:
-                fuel_y = (fuel_y + 1) % 94
-            elif fuel_y == 0:
-                todown_fuel = True
-            else:
-                fuel_y = (fuel_y - 1) % 94
-                todown_fuel = False
-        #если уровень идет вверх ,то пропускаем отрисовку уровня , если вниз то рисуем
-        if fuel_y_old - fuel_y <= 0:
-            screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
-            #print(fuel_y_old - fuel_y,"<")
-            fuel_y_old = fuel_y
+        screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
 
         #Отображение времени
-        current_time = datetime.datetime.now()
+        current_time = datetime.now()
         time_text = time_font.render(current_time.strftime("%H:%M"), True, (160, 160, 160))
         screen.blit(time_text, (668, 75))  # Правый верхний угол
 

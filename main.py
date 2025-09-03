@@ -1,7 +1,7 @@
 import sys
 import threading
-import i2c
-import uart 
+from i2c  import i2c
+from uart import uart
 import dashboard
 import argparse
 from queue import Queue
@@ -18,11 +18,11 @@ def main():
     running = [True]
     que = [Queue(1)] # que[0] - очередь для датчика уровня топлива
 
-    i2c_devices = i2c.i2c()
-    thread_i2c = threading.Thread(target=i2c_devices.task_ADS1115, name="task_ADS1115",args=(running, que, ))
-    thread_i2c.start()
+    i2c_manager = i2c()
+    thread_i2c_ADS1115 = threading.Thread(target=i2c_manager.task_ADS1115, name="task_ADS1115",args=(running, que, ))
+    thread_i2c_ADS1115.start()
    
-    uart_device = uart.uart()
+    uart_device = uart()
     thread_uart = threading.Thread(target=uart_device.task_GPSReader, name="thread_uart",args=(running, ))
     thread_uart.start()
 
@@ -31,7 +31,7 @@ def main():
 
     thread_dashboard.join()
     thread_uart.join()
-    thread_i2c.join()
+    thread_i2c_ADS1115.join()
     sys.exit()
 
 if __name__ == "__main__":

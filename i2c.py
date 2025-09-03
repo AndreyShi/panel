@@ -3,6 +3,8 @@ import math
 from queue import Queue, Full 
 from collections import deque
 import threading
+import random
+from datetime import datetime
 
 try:
     # Пытаемся импортировать настоящий smbus2
@@ -12,9 +14,18 @@ try:
         def __init__(self, bus_number=1):
             self.bus = smbus2.SMBus(bus_number)
             self.lock = threading.Lock()
+
+        def read_adc(self, config, address):
+            with self.lock:    # блокируем доступ к шине
+                REG_CONVERSION = 0x00
+                REG_CONFIG = 0x01                               
+                config_bytes = [config >> 8, config & 0xFF]
+                self.bus.write_i2c_block_data(address, REG_CONFIG, config_bytes)
+                time.sleep(0.01)# ждем преобразования АЦП
+                result = self.bus.read_i2c_block_data(address, REG_CONVERSION, 2)
+                value = (result[0] << 8) | result[1]
+                return value    # разблокируем доступ к шине, в этот момент другой поток приступит к работе с шиной
         def task_ADS1115(self, running, que):
-            # очередь для усреднения
-            deq = deque(maxlen=5)
             # Настройка конфигурации
             OS = 1        # Однократное преобразование
             # Дифференциальные режимы:
@@ -43,29 +54,17 @@ try:
             COMP_LAT = 0  # Не фиксировать
             COMP_QUE = 0b11 # Отключить компаратор                
             config = (OS << 15) | (MUX << 12) | (PGA << 9) | (MODE << 8) | (DR << 5) | (COMP_MODE << 4) | (COMP_POL << 3) | (COMP_LAT << 2) | COMP_QUE    
+            # очередь для усреднения
+            deq = deque(maxlen=5)
 
             while running[0]:
                 value = self.read_adc(config, 0x48)
-                voltage = (value * 2.048) / 32767.0          # Конвертация в напряжение
-                R2 = 430 * (voltage / (3.3 - voltage))         # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
+                voltage = (value * 2.048) / 32767.0     # Конвертация в напряжение
+                R2 = 430 * (voltage / (3.3 - voltage))  # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
                 deq.append(R2)
-                R2_avg = sum(deq) / len(deq) if deq else 0
+                R2_avg = sum(deq) / len(deq)
                 #print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}, R2_avg: {R2_avg:.3f}")
-                try:
-                    que[0].put(R2_avg, timeout = 0.5)
-                except Full:
-                    print("que[0].put - очередь занята")
-                #time.sleep(0.5)  # задержку отключили и стало более отзывчевее меняться уровень топлива на экране
-        def read_adc(self, config, address):
-            with self.lock:    # блокируем доступ к шине
-                REG_CONVERSION = 0x00
-                REG_CONFIG = 0x01                               
-                config_bytes = [config >> 8, config & 0xFF]
-                self.bus.write_i2c_block_data(address, REG_CONFIG, config_bytes)
-                time.sleep(0.01)# ждем преобразования АЦП
-                result = self.bus.read_i2c_block_data(address, REG_CONVERSION, 2)
-                value = (result[0] << 8) | result[1]
-                return value    # разблокируем доступ к шине, в этот момент другой поток приступит к работе с шиной
+                que[0].put(R2_avg)                      #если что ждем бесконечно потомучто в отдельном потоке
 except ImportError:
     # Создаем mock-версию smbus2
     class i2c:
@@ -74,8 +73,20 @@ except ImportError:
             self.devices = {}  # Виртуальные устройства I2C
             print(f"🖥 i2c: виртуальная шина {bus_number}")
         def task_ADS1115(self, running, que):
-            que[0] = None  
+            toup_R2 = True
+            R2 = 1  
             while running[0]:
-                print(f"I2c value: {math.pi:.2f}, voltage: {math.pi:.2f}, R2: {math.pi:.2f}")
-                time.sleep(1)
+                if toup_R2:  # Движение вверх
+                    R2 += 5 #random.uniform(0.0, 13.0)
+                    if R2 >= 300:
+                        R2 = 300
+                        toup_R2 = False  # достигли верха - идем вниз
+                else:        # Движение вниз
+                    R2 -= 1  #random.uniform(0.0, 3.0)
+                    if R2 <= 0:
+                        R2 = 0.2
+                        toup_R2 = True   # достигли низа - идем вверх
+                #print(f"R2:  {R2:.2f}")             
+                que[0].put(R2) 
+                #print(f"put {R2:.3f} {datetime.now().strftime("%S.%f")[:-3]}")
                 
