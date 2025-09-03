@@ -2,6 +2,7 @@ import time
 import math
 from queue import Queue, Full 
 from collections import deque
+import threading
 
 try:
     # Пытаемся импортировать настоящий smbus2
@@ -10,14 +11,10 @@ try:
     class i2c:
         def __init__(self, bus_number=1):
             self.bus = smbus2.SMBus(bus_number)
-            self.deq = deque(maxlen=5)
-        def task_I2cbus(self, running, que):         
-            while running[0]:
-                self.task_ADS1115(que)
-                #time.sleep(0.5)  # задержку отключили и стало более отзывчевее меняться уровень топлива на экране
-        def task_ADS1115(self, que, address=0x48):            
-            REG_CONVERSION = 0x00
-            REG_CONFIG = 0x01
+            self.lock = threading.Lock()
+        def task_ADS1115(self, running, que):
+            # очередь для усреднения
+            deq = deque(maxlen=5)
             # Настройка конфигурации
             OS = 1        # Однократное преобразование
             # Дифференциальные режимы:
@@ -44,35 +41,31 @@ try:
             COMP_MODE = 0 # Традиционный компаратор
             COMP_POL = 0  # Активный низкий
             COMP_LAT = 0  # Не фиксировать
-            COMP_QUE = 0b11 # Отключить компаратор
-                
-            config = (OS << 15) | (MUX << 12) | (PGA << 9) | (MODE << 8) | \
-                        (DR << 5) | (COMP_MODE << 4) | (COMP_POL << 3) | \
-                        (COMP_LAT << 2) | COMP_QUE
-                
-            # Записываем конфигурацию
-            config_bytes = [config >> 8, config & 0xFF]
-            self.bus.write_i2c_block_data(address, REG_CONFIG, config_bytes)
-                
-            # Ожидание преобразования
-            time.sleep(0.01)
-                
-            # Чтение результата
-            result = self.bus.read_i2c_block_data(address, REG_CONVERSION, 2)
-            value = (result[0] << 8) | result[1]
-                
-            # Конвертация в напряжение
-            voltage = (value * 2.048) / 32767.0
+            COMP_QUE = 0b11 # Отключить компаратор                
+            config = (OS << 15) | (MUX << 12) | (PGA << 9) | (MODE << 8) | (DR << 5) | (COMP_MODE << 4) | (COMP_POL << 3) | (COMP_LAT << 2) | COMP_QUE    
 
-            # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
-            R2 = 430 * (voltage/(3.3 - voltage))
-            self.deq.append(R2)
-            R2_avg = sum(self.deq) / len(self.deq) if self.deq else 0
-            #print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}, R2_avg: {R2_avg:.3f}")
-            try:
-                que[0].put(R2_avg, timeout = 0.5)
-            except Full:
-                print("que[0].put - очередь занята")
+            while running[0]:
+                value = self.read_adc(config, 0x48)
+                voltage = (value * 2.048) / 32767.0          # Конвертация в напряжение
+                R2 = 430 * (voltage / (3.3 - voltage))         # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
+                deq.append(R2)
+                R2_avg = sum(deq) / len(deq) if deq else 0
+                #print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}, R2_avg: {R2_avg:.3f}")
+                try:
+                    que[0].put(R2_avg, timeout = 0.5)
+                except Full:
+                    print("que[0].put - очередь занята")
+                #time.sleep(0.5)  # задержку отключили и стало более отзывчевее меняться уровень топлива на экране
+        def read_adc(self, config, address):
+            REG_CONVERSION = 0x00
+            REG_CONFIG = 0x01
+            with self.lock:    # блокируем доступ к шине                               
+                config_bytes = [config >> 8, config & 0xFF]
+                self.bus.write_i2c_block_data(address, REG_CONFIG, config_bytes)
+                time.sleep(0.01)# ждем преобразования АЦП
+                result = self.bus.read_i2c_block_data(address, REG_CONVERSION, 2)
+                value = (result[0] << 8) | result[1]
+                return value    # разблокируем доступ к шине, в этот момент другой поток приступит к работе с шиной
 except ImportError:
     # Создаем mock-версию smbus2
     class i2c:
@@ -80,10 +73,9 @@ except ImportError:
             self.bus_number = bus_number
             self.devices = {}  # Виртуальные устройства I2C
             print(f"🖥 i2c: виртуальная шина {bus_number}")
-        def task_I2cbus(self, running, que):
+        def task_ADS1115(self, running, que):
             que[0] = None  
             while running[0]:
-                self.task_ADS1115()
-                time.sleep(1)
-        def task_ADS1115(self, address=0x48):
                 print(f"I2c value: {math.pi:.2f}, voltage: {math.pi:.2f}, R2: {math.pi:.2f}")
+                time.sleep(1)
+                

@@ -19,7 +19,7 @@ def main():
     que = [Queue(1)] # que[0] - очередь для датчика уровня топлива
 
     i2c_devices = i2c.i2c()
-    thread_i2c = threading.Thread(target=i2c_devices.task_I2cbus, name="thread_i2c",args=(running, que, ))
+    thread_i2c = threading.Thread(target=i2c_devices.task_ADS1115, name="task_ADS1115",args=(running, que, ))
     thread_i2c.start()
    
     uart_device = uart.uart()
