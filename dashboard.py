@@ -216,6 +216,7 @@ def task_Dashboard(stop_event:Event,
             que[0].task_done()
         except Empty:
             print(f"Очередь que[0] пуста, используются предыдущие данные R2: {R2}")
+
         fuel_y = int((300 - R2) * (94 / 300)) % 94   
 
         # Вычисляем высоту бензина
@@ -235,7 +236,7 @@ def task_Dashboard(stop_event:Event,
             # Рисуем на правильной позиции
             screen.blit(fuel_part, (954, 109 + (empty_canister_img.get_height() - current_fuel_height)))
         
-        screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
+        screen.blit(level_img, (1024 - 66 - 19 , 109+ fuel_y))  # Просто рисуем в нужной позиции
 
         #Отображение времени
         current_time = datetime.now()
