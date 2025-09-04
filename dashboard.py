@@ -182,7 +182,7 @@ def task_Dashboard(stop_event:Event,
         # Обновление угла стрелки Скорости(имитация данных)
         if angle < 119 and toup == True:
             angle = (angle + 1) % 120
-        elif angle == 0:
+        elif angle == 0 or angle < 0.1:
             toup = True
         else:
             angle = (angle - 1) % 120
@@ -197,16 +197,17 @@ def task_Dashboard(stop_event:Event,
         else:
             angle_rmp = (angle_rmp - 1) % 115
             toup_rmp = False
+
         # Отрисовка
         screen.blit(background, (0, 0))
 
         # Вращение стрелки Скорости
-        rotated_needle = pygame.transform.rotate(needle_img, ccw * (angle + 228))  # Минус для правильного направления
+        rotated_needle = pygame.transform.rotozoom(needle_img, ccw * (angle + 228),1)  # Минус для правильного направления
         new_rect = rotated_needle.get_rect(center=needle_rect.center)
         screen.blit(rotated_needle, new_rect.topleft)
 
         # Вращение стрелки RMP
-        rotated_rmp = pygame.transform.rotate(rmp_img, -1 * (angle_rmp + 15))  # 15...130
+        rotated_rmp = pygame.transform.rotozoom(rmp_img, -1 * (angle_rmp + 15),1)  # 15...130
         new_rect = rotated_rmp.get_rect(center=rmp_rect.center)
         screen.blit(rotated_rmp, new_rect.topleft)
 
