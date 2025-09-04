@@ -151,9 +151,11 @@ try:
             except:
                 return None
         
-        def read_data_continuously(self, running=[True]):
+        def read_data_continuously(self, running=None):
             """Непрерывное чтение данных"""
             print("Начинаем чтение данных...")
+            if running is None:
+                running = [True]
             
             while running[0]:
                 try:
@@ -319,11 +321,13 @@ except ImportError:
                 
             return data
         
-        def monitor_data(self, running=[True]):
+        def monitor_data(self, running=None):
             """Мониторинг данных в реальном времени"""
             print("Мониторинг данных OBD2...")
             print("Нажмите Ctrl+C для остановки")
             print("-" * 50)
+            if running is None:
+                running = [True]
             
             try:
                 while running[0]:
