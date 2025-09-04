@@ -80,7 +80,8 @@ def task_Dashboard(stop_event:Event,
 
     # Загрузка канистры
     try:
-        canister_img = pygame.image.load("res/canister_1024_576.png").convert_alpha()
+        empty_canister_img = pygame.image.load("res/empty_canister_1024_576.png").convert_alpha()
+        full_canister_img = pygame.image.load("res/full_canister_1024_576.png").convert_alpha()
     except:
         print("Ошибка: canister_1024_576.png не найден.")
 
@@ -209,9 +210,6 @@ def task_Dashboard(stop_event:Event,
         new_rect = rotated_rmp.get_rect(center=rmp_rect.center)
         screen.blit(rotated_rmp, new_rect.topleft)
 
-        # Рисуем канистру
-        screen.blit(canister_img, (954, 109))
-
         # Изменение уровня
         try:
             R2 = que[0].get_nowait()
@@ -219,21 +217,24 @@ def task_Dashboard(stop_event:Event,
         except Empty:
             print(f"Очередь que[0] пуста, используются предыдущие данные R2: {R2}")
         fuel_y = int((300 - R2) * (94 / 300)) % 94   
-        # Рисуем бензин в канистре
+
         # Вычисляем высоту бензина
         fuel_level = 0.98 - (fuel_y / 93)
-        GASOLINE_COLOR = (43, 0, 181)  # Синий для бензина
-        current_fuel_height = int(canister_img.get_height() * fuel_level) 
-        # 1. Создаём поверхность для бензина  
-        gasoline_surface = pygame.Surface(canister_img.get_size(), pygame.SRCALPHA)
-        # 2. Закрашиваем область бензина
-        fuel_area = pygame.Rect(0, canister_img.get_height() - current_fuel_height, 
-                            canister_img.get_width(), current_fuel_height)
-        pygame.draw.rect(gasoline_surface, GASOLINE_COLOR, fuel_area)
-        # 3. Используем канистру как маску - бензин появится только там, где канистра непрозрачна
-        gasoline_surface.blit(canister_img, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
-        # 4. Рисуем бензин на экране
-        screen.blit(gasoline_surface, (954, 109))
+
+        # В игровом цикле:
+        current_fuel_height = int(empty_canister_img.get_height() * fuel_level)
+        # Рисуем пустую канистру
+        screen.blit(empty_canister_img, (954, 109))
+        # Рисуем часть полной канистры
+        if fuel_level > 0:
+            # Создаем subsurface (более эффективно)
+            fuel_rect = pygame.Rect(0, empty_canister_img.get_height() - current_fuel_height,
+                                    empty_canister_img.get_width(), current_fuel_height)
+            fuel_part = full_canister_img.subsurface(fuel_rect)
+    
+            # Рисуем на правильной позиции
+            screen.blit(fuel_part, (954, 109 + (empty_canister_img.get_height() - current_fuel_height)))
+        
         screen.blit(level_img, (1024 - 66 - 19 , 110+ fuel_y))  # Просто рисуем в нужной позиции
 
         #Отображение времени
