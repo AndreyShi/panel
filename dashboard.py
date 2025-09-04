@@ -80,8 +80,8 @@ def task_Dashboard(stop_event:Event,
 
     # Загрузка канистры
     try:
-        empty_canister_img = pygame.image.load("res/empty_canister_1024_576.png").convert_alpha()
-        full_canister_img = pygame.image.load("res/full_canister_1024_576.png").convert_alpha()
+        full_canister_img = pygame.image.load("res/empty_canister_1024_576.png").convert_alpha()
+        empty_canister_img = pygame.image.load("res/full_canister_1024_576.png").convert_alpha()
     except:
         print("Ошибка: canister_1024_576.png не найден.")
 
@@ -219,7 +219,7 @@ def task_Dashboard(stop_event:Event,
         fuel_y = int((300 - R2) * (94 / 300)) % 94   
 
         # Вычисляем высоту бензина
-        fuel_level = 0.98 - (fuel_y / 93)
+        fuel_level = 0.98 - (fuel_y / 94)
 
         # В игровом цикле:
         current_fuel_height = int(empty_canister_img.get_height() * fuel_level)
