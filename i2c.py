@@ -64,6 +64,10 @@ try:
                 deq.append(R2)
                 R2_avg = sum(deq) / len(deq)
                 #print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}, R2_avg: {R2_avg:.3f}")
+                if R2_avg >= 300:
+                    R2_avg = 300
+                elif R2_avg <= 0:
+                     R2_avg = 0.2
                 que[0].put(R2_avg)                      #если что ждем бесконечно потомучто в отдельном потоке
 except ImportError:
     # Создаем mock-версию smbus2
