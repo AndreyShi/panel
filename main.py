@@ -1,5 +1,6 @@
 import sys
-import threading
+from threading import Event
+from threading import Thread
 from i2c  import i2c
 from uart import uart
 import dashboard
@@ -15,18 +16,21 @@ def main():
     if args.window:
         arguments = '-w'
 
-    running = [True]
-    que = [Queue(1)] # que[0] - очередь для датчика уровня топлива
+    stop_event = Event()
+    que = [
+        Queue(1), #очередь с size 1 для датчика уровня топлива
+        Queue()   #пока еще не используется
+    ] 
 
     i2c_manager = i2c()
-    thread_i2c_ADS1115 = threading.Thread(target=i2c_manager.task_ADS1115, name="task_ADS1115",args=(running, que, ))
+    thread_i2c_ADS1115 = Thread(target=i2c_manager.task_ADS1115, name="task_ADS1115",args=(stop_event, que, ))
     thread_i2c_ADS1115.start()
    
     uart_device = uart()
-    thread_uart = threading.Thread(target=uart_device.task_GPSReader, name="thread_uart",args=(running, ))
+    thread_uart = Thread(target=uart_device.task_GPSReader, name="thread_uart",args=(stop_event, ))
     thread_uart.start()
 
-    thread_dashboard = threading.Thread(target=dashboard.task_Dashboard, name="thread_dasboard",args=(running, arguments, que ))
+    thread_dashboard = Thread(target=dashboard.task_Dashboard, name="thread_dasboard",args=(stop_event, arguments, que ))
     thread_dashboard.start()
 
     thread_dashboard.join()

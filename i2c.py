@@ -5,6 +5,8 @@ from collections import deque
 import threading
 import random
 from datetime import datetime
+from threading import Event
+from typing import List
 
 try:
     # Пытаемся импортировать настоящий smbus2
@@ -25,7 +27,7 @@ try:
                 result = self.bus.read_i2c_block_data(address, REG_CONVERSION, 2)
                 value = (result[0] << 8) | result[1]
                 return value    # разблокируем доступ к шине, в этот момент другой поток приступит к работе с шиной
-        def task_ADS1115(self, running, que):
+        def task_ADS1115(self, stop_event:Event, que:List[Queue]):
             # Настройка конфигурации
             OS = 1        # Однократное преобразование
             # Дифференциальные режимы:
@@ -57,7 +59,7 @@ try:
             # очередь для усреднения
             deq = deque(maxlen=5)
 
-            while running[0]:
+            while not stop_event.is_set():
                 value = self.read_adc(config, 0x48)
                 voltage = (value * 2.048) / 32767.0     # Конвертация в напряжение
                 R2 = 430 * (voltage / (3.3 - voltage))  # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
@@ -68,7 +70,10 @@ try:
                     R2_avg = 300
                 elif R2_avg <= 0:
                      R2_avg = 0.2
-                que[0].put(R2_avg)                      #если что ждем бесконечно потомучто в отдельном потоке
+                try:
+                    que[0].put(R2_avg, timeout=1.0)                      #если что ждем бесконечно потомучто в отдельном потоке
+                except Full:
+                    print(f"Очередь que[0] переполнена, данные R2_avg: {R2_avg} потеряны") 
 except ImportError:
     # Создаем mock-версию smbus2
     class i2c:
@@ -76,10 +81,10 @@ except ImportError:
             self.bus_number = bus_number
             self.devices = {}  # Виртуальные устройства I2C
             print(f"🖥 i2c: виртуальная шина {bus_number}")
-        def task_ADS1115(self, running, que):
+        def task_ADS1115(self, stop_event:Event, que:List[Queue]):
             toup_R2 = True
             R2 = 1  
-            while running[0]:
+            while not stop_event.is_set():
                 if toup_R2:  # Движение вверх
                     R2 += 5 #random.uniform(0.0, 13.0)
                     if R2 >= 300:
@@ -90,7 +95,10 @@ except ImportError:
                     if R2 <= 0:
                         R2 = 0.2
                         toup_R2 = True   # достигли низа - идем вверх
-                #print(f"R2:  {R2:.2f}")             
-                que[0].put(R2) 
+                #print(f"R2:  {R2:.2f}")
+                try:             
+                    que[0].put(R2, timeout=1.0)
+                except Full:
+                    print(f"Очередь que[0] переполнена, данные R2: {R2} потеряны") 
                 #print(f"put {R2:.3f} {datetime.now().strftime("%S.%f")[:-3]}")
                 

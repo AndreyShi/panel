@@ -1,6 +1,7 @@
 import pigpio
 import time
-import threading
+from threading import Event
+
 '''
 делитель напряжения для выхода с датчика 8V
 R1 (кОм)	R2 (кОм)	Vout при 8V (В)	Запас до 1.8V	Запас до 3.3V	Примечание
@@ -56,7 +57,7 @@ def pulse_callback(gpio, level, tick):
     pulse_count += 1
 
 # Функция, которая будет работать в отдельном потоке
-def task_gpio_gps(running):
+def task_gpio_gps(stop_event:Event):
     global pulse_count, current_speed_kmh
     # Основной код
     pi = pigpio.pi()
@@ -65,9 +66,11 @@ def task_gpio_gps(running):
     pi.set_pull_up_down(PULSE_GPIO, pigpio.PUD_DOWN) # ВКЛЮЧАЕМ ПОДТЯЖКУ К ЗЕМЛЕ
     cb = pi.callback(PULSE_GPIO, pigpio.RISING_EDGE, pulse_callback)
     
-    while running[0]:
+    while not stop_event.is_set():
         count_start = pulse_count
-        time.sleep(1) # период одна секунда, для удобного перевода в км/ч
+        stopped = stop_event.wait(1.0) # период одна секунда, для удобного перевода в км/ч
+        if stopped:
+            break
         count_end = pulse_count
         impulses_in_second = count_end - count_start
         current_speed_kmh = (impulses_in_second / IMPULSES_PER_METER) * 3.6 # м/c в км/ч

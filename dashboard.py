@@ -2,7 +2,10 @@ import pygame
 import time
 import datetime
 from datetime import datetime
-
+from threading import Event
+from typing import Literal
+from typing import List
+from queue import Queue,Empty
 
 def is_raspberry_pi():
     """Проверяет, работает ли на Raspberry Pi"""
@@ -22,7 +25,9 @@ def scale_image(image, factor):
                 int(image.get_height() * factor))
     return pygame.transform.scale(image, new_size)
 
-def task_Dashboard(running, arguments,que):
+def task_Dashboard(stop_event:Event, 
+                   arguments: Literal['-w',''], 
+                   que:       List[Queue]):
     # Цвета
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
@@ -164,13 +169,14 @@ def task_Dashboard(running, arguments,que):
 
 
 
-    while running[0]:
+    while not stop_event.is_set():
+        start_time = time.time()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running[0] = False
+                stop_event.set()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Выход по ESC
-                    running[0] = False
+                    stop_event.set()
 
         # Обновление угла стрелки Скорости(имитация данных)
         if angle < 119 and toup == True:
@@ -207,9 +213,11 @@ def task_Dashboard(running, arguments,que):
         screen.blit(canister_img, (954, 109))
 
         # Изменение уровня
-        if que[0]: #очередь пуста - значит пропускаем, ничего не ждем
-            R2 = que[0].get()
+        try:
+            R2 = que[0].get_nowait()
             que[0].task_done()
+        except Empty:
+            print(f"Очередь que[0] пуста, используются предыдущие данные R2: {R2}")
         fuel_y = int((300 - R2) * (94 / 300)) % 94   
         # Рисуем бензин в канистре
         # Вычисляем высоту бензина
@@ -297,5 +305,10 @@ def task_Dashboard(running, arguments,que):
             screen.blit(v12_8_image, (852, 418))
 
         pygame.display.flip()
-        clock.tick(60)  # 60 FPS
+        # Адаптивное ожидание
+        frame_time = time.time() - start_time
+        target_time = 1.0 / 60 #60FPS
+        wait_time = max(0.005, target_time - frame_time)
+        #print(frame_time)
+        stop_event.wait(wait_time)
     pygame.quit()

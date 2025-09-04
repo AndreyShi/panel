@@ -1,4 +1,5 @@
 import time
+from threading import Event
 
 try:
     #sudo apt-get update
@@ -151,13 +152,13 @@ try:
             except:
                 return None
         
-        def read_data_continuously(self, running=None):
+        def read_data_continuously(self, stop_event:Event=None):
             """Непрерывное чтение данных"""
             print("Начинаем чтение данных...")
-            if running is None:
-                running = [True]
+            if stop_event is None:
+                stop_event = Event()
             
-            while running[0]:
+            while not stop_event.is_set():
                 try:
                     # Температура охлаждающей жидкости
                     coolant_temp = self.get_coolant_temp()
@@ -181,14 +182,14 @@ try:
                         print(f"Давление масла: {oil_pressure} kPa")
                     
                     print("-" * 40)
-                    time.sleep(2)
+                    stop_event.wait(2)
                     
                 except KeyboardInterrupt:
                     print("\nОстановка...")
-                    break
+                    stop_event.set()
                 except Exception as e:
                     print(f"Ошибка чтения: {e}")
-                    time.sleep(1)
+                    stop_event.wait(1)
         
         def close_connection(self):
             """Закрытие соединения"""
@@ -198,7 +199,7 @@ try:
                 self.obd_connection.close()
             print("Соединения закрыты")
         
-        def task_ELM327BL(self, running):        
+        def task_ELM327BL(self, stop_event:Event):        
             try:
                 # Поиск устройства
                 device_addr = self.discover_devices()
@@ -207,7 +208,7 @@ try:
                     # Подключение
                     if self.connect_to_elm327(device_addr):
                         # Чтение данных
-                        self.read_data_continuously(running)
+                        self.read_data_continuously(stop_event)
                     else:
                         print("Не удалось подключиться к ELM327")
                 else:
@@ -321,16 +322,16 @@ except ImportError:
                 
             return data
         
-        def monitor_data(self, running=None):
+        def monitor_data(self, stop_event:Event=None):
             """Мониторинг данных в реальном времени"""
             print("Мониторинг данных OBD2...")
             print("Нажмите Ctrl+C для остановки")
             print("-" * 50)
-            if running is None:
-                running = [True]
+            if stop_event is None:
+                stop_event = Event()
             
             try:
-                while running[0]:
+                while not stop_event.is_set():
                     data = self.get_obd_data()
                     
                     print(f"Температура ОЖ: {data.get('coolant_temp', 'N/A')}°C")
@@ -349,7 +350,7 @@ except ImportError:
                         print("Давление масла: N/A")
                     
                     print("-" * 30)
-                    time.sleep(2)
+                    stop_event.wait(2)
                     
             except KeyboardInterrupt:
                 print("\nОстановка мониторинга...")
@@ -360,7 +361,7 @@ except ImportError:
                 self.connection.close()
                 print("Соединение закрыто")
         
-        def task_ELM327BL(self, running):
+        def task_ELM327BL(self, stop_event:Event):
             try:
                 # Поиск Bluetooth порта
                 com_port = self.find_bluetooth_com_port()
@@ -369,7 +370,7 @@ except ImportError:
                     # Подключение
                     if self.connect_via_bluetooth(com_port):
                         # Запуск мониторинга
-                        self.monitor_data(running)
+                        self.monitor_data(stop_event)
                     else:
                         print("Не удалось подключиться. Проверьте:")
                         print("1. Bluetooth включен на ПК и адаптере")

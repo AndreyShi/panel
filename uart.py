@@ -1,6 +1,7 @@
 import time
 import serial
 import platform
+from threading import Event
 
 class uart:
     def __init__(self):
@@ -22,8 +23,8 @@ class uart:
             print(f"Неожиданная ошибка: {e}")
             self.ser = None
         
-    def task_GPSReader(self,running):
-        while running[0] and self.ser is not None:
+    def task_GPSReader(self, stop_event:Event):
+        while not stop_event.is_set() and self.ser is not None:
             data = self.ser.read(self.ser.in_waiting or 1).decode('ascii', errors='ignore')
             self.buffer += data
 
@@ -43,7 +44,7 @@ class uart:
                 # Если for не нашел ни одной полной строки, очищаем буфер
                 # (или оставляем его, если ожидаются очень длинные строки)
                 buffer = ""
-            time.sleep(0.5)
+            stop_event.wait(0.5)
         return None
         
     def close(self):
