@@ -310,10 +310,10 @@ def task_Dashboard(stop_event:Event,
             screen.blit(v12_8_image, (852, 418))
 
         pygame.display.flip()
-        # Адаптивное ожидание
+        # Адаптивное ожидание FPS = frame_time + wait_time
         frame_time = time.time() - start_time
         target_time = 1.0 / 40 #60FPS
         wait_time = max(0.005, target_time - frame_time)
-        print(f"frame_time: {frame_time:.3f} temp CPU: {get_cpu_temp():.1f}°C")
+        #print(f"frame_time: {frame_time:.3f} temp CPU: {get_cpu_temp():.1f}°C")
         stop_event.wait(wait_time)
     pygame.quit()
