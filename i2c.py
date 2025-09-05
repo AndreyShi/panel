@@ -57,7 +57,7 @@ try:
             COMP_QUE = 0b11 # Отключить компаратор                
             config = (OS << 15) | (MUX << 12) | (PGA << 9) | (MODE << 8) | (DR << 5) | (COMP_MODE << 4) | (COMP_POL << 3) | (COMP_LAT << 2) | COMP_QUE    
             # очередь для усреднения
-            deq = deque(maxlen=5)
+            deq = deque(maxlen=10)
 
             while not stop_event.is_set():
                 value = self.read_adc(config, 0x48)
@@ -65,7 +65,9 @@ try:
                 R2 = 430 * (voltage / (3.3 - voltage))  # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
                 deq.append(R2)
                 R2_avg = sum(deq) / len(deq)
-                #print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}, R2_avg: {R2_avg:.3f}")
+                R2_round = round(R2_avg, 0)
+                #print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}, R2_avg: {R2_avg:.3f}, R2_round: {R2_round:.3f}")
+                R2_avg = R2_round
                 if R2_avg >= 300:
                     R2_avg = 300
                 elif R2_avg <= 0:

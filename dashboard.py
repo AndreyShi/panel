@@ -19,11 +19,13 @@ def is_raspberry_pi():
         pass
     return False
 
-def scale_image(image, factor):
-    """Масштабирует изображение с сохранением пропорций"""
-    new_size = (int(image.get_width() * factor), 
-                int(image.get_height() * factor))
-    return pygame.transform.scale(image, new_size)
+def get_cpu_temp():
+    try:
+        with open("/sys/class/thermal/thermal_zone0/temp", "r") as f:
+            temp = int(f.read()) / 1000.0
+        return temp
+    except:
+        return 0.0
 
 def task_Dashboard(stop_event:Event, 
                    arguments: Literal['-w',''], 
@@ -310,8 +312,8 @@ def task_Dashboard(stop_event:Event,
         pygame.display.flip()
         # Адаптивное ожидание
         frame_time = time.time() - start_time
-        target_time = 1.0 / 60 #60FPS
+        target_time = 1.0 / 40 #60FPS
         wait_time = max(0.005, target_time - frame_time)
-        #print(frame_time)
+        print(f"frame_time: {frame_time:.3f} temp CPU: {get_cpu_temp():.1f}°C")
         stop_event.wait(wait_time)
     pygame.quit()
