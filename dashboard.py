@@ -220,10 +220,10 @@ def task_Dashboard(stop_event:Event,
         except Empty:
             print(f"Очередь que[0] пуста, используются предыдущие данные R2: {R2}")
 
-        fuel_y = int((300 - R2) * (94 / 300)) % 94   
+        fuel_y =  (300 - R2) * (94 / 300) 
 
         # Вычисляем высоту бензина
-        fuel_level = 0.98 - (fuel_y / 94)
+        fuel_level = 1 - (fuel_y / 94)
 
         # В игровом цикле:
         current_fuel_height = int(empty_canister_img.get_height() * fuel_level)

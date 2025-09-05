@@ -23,7 +23,7 @@ try:
                 REG_CONFIG = 0x01                               
                 config_bytes = [config >> 8, config & 0xFF]
                 self.bus.write_i2c_block_data(address, REG_CONFIG, config_bytes)
-                time.sleep(0.01)# ждем преобразования АЦП
+                time.sleep(0.02)# ждем преобразования АЦП
                 result = self.bus.read_i2c_block_data(address, REG_CONVERSION, 2)
                 value = (result[0] << 8) | result[1]
                 return value    # разблокируем доступ к шине, в этот момент другой поток приступит к работе с шиной
@@ -50,32 +50,36 @@ try:
             #PGA_0_256V = 0b101   # ±0.256V
             PGA = 0b010   # ±2.048V
             MODE = 1      # Однократный режим
-            DR = 0b100    # 128 SPS
+            #8SPS   = 0b000    # 0,125 sec
+            #64SPS  = 0b011    # 0,016 sec
+            #128SPS = 0b100    # 0,008 sec
+            DR = 0b011    
             COMP_MODE = 0 # Традиционный компаратор
             COMP_POL = 0  # Активный низкий
             COMP_LAT = 0  # Не фиксировать
             COMP_QUE = 0b11 # Отключить компаратор                
             config = (OS << 15) | (MUX << 12) | (PGA << 9) | (MODE << 8) | (DR << 5) | (COMP_MODE << 4) | (COMP_POL << 3) | (COMP_LAT << 2) | COMP_QUE    
             # очередь для усреднения
-            deq = deque(maxlen=10)
-
+            deq = deque(maxlen=15)
+            VOLTAGE_COEF = 2.048 / 32767.0
+            R1 = 430.0
+            VCC = 3.3
             while not stop_event.is_set():
                 value = self.read_adc(config, 0x48)
-                voltage = (value * 2.048) / 32767.0     # Конвертация в напряжение
-                R2 = 430 * (voltage / (3.3 - voltage))  # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
-                deq.append(R2)
-                R2_avg = sum(deq) / len(deq)
-                R2_round = round(R2_avg, 0)
-                #print(f"I2c value: {value}, voltage: {voltage:.3f}, R2: {R2:.3f}, R2_avg: {R2_avg:.3f}, R2_round: {R2_round:.3f}")
-                R2_avg = R2_round
-                if R2_avg >= 300:
-                    R2_avg = 300
-                elif R2_avg <= 0:
-                     R2_avg = 0.2
+                deq.append(value)
+                value_avg = (sum(deq) + len(deq) // 2) // len(deq) #целочесленное округление
+                voltage = value_avg * VOLTAGE_COEF # Конвертация в напряжение
+                voltage_round = round(voltage, 3)
+                R2 = R1 * (voltage_round / (VCC - voltage_round))  # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
+                print(f"value: {value}, value_avg: {value_avg}, voltage: {voltage:.3f}, voltage_round: {voltage_round:.3f} R2: {R2:.3f}")
+                if R2 >= 300:
+                    R2 = 300
+                elif R2 <= 0:
+                     R2 = 0.2
                 try:
-                    que[0].put(R2_avg, timeout=1.0)                      #если что ждем бесконечно потомучто в отдельном потоке
+                    que[0].put(R2, timeout=1.0)                      #если что ждем бесконечно потомучто в отдельном потоке
                 except Full:
-                    print(f"Очередь que[0] переполнена, данные R2_avg: {R2_avg} потеряны") 
+                    print(f"Очередь que[0] переполнена, данные R2_avg: {R2} потеряны") 
 except ImportError:
     # Создаем mock-версию smbus2
     class i2c:
