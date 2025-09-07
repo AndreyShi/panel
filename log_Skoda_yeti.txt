@@ -1,0 +1,1028 @@
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 695.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 704.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 703.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 703.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 704.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 695.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 705.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 696.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 701.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 700.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 696.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 697.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 699.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 701.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 702.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 700.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 702.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 697.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 696.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 697.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 701.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 698.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 695.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 702.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 700.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 695.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 702.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 700.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 701.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 702.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 701.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 703.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 696.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 703.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 698.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 697.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 706.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 702.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 703.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 692.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 702.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 703.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 703.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 700.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 700.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 704.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 699.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 704.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 702.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 691.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 702.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 699.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 700.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 702.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 697.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 695.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 704.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 698.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 705.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 701.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 705.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 700.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 700.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 699.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 699.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 703.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 700.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 695.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 702.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 705.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 702.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 701.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 697.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 704.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 701.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 696.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 695.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 705.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 700.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 707.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 695.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 697.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 699.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 701.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 702.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 700.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 696.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 701.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 700.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 695.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 704.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 697.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 700.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 702.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 699.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 692.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 703.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 702.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 703.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 699.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 697.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 703.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 691.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 707.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 696.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 692.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 698.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 703.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 697.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 696.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 700.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 99°C
+Обороты: 701.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 704.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 98°C
+Обороты: 697.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 97°C
+Обороты: 698.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 700.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 700.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 96°C
+Обороты: 698.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 703.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 697.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 697.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 702.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 700.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 702.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 698.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 704.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 700.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 702.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 705.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 705.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 698.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 93°C
+Обороты: 695.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 700.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 703.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 701.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 700.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 696.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 94°C
+Обороты: 698.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 700.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 699.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 696.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 696.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 703.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 698.5 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 701.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+Ошибка чтения данных: 'Status' object has no attribute 'magnitude'
+Температура ОЖ: 95°C
+Обороты: 695.0 об/мин
+Check Engine: N/A
+Давление масла: N/A
+------------------------------
+
+Остановка мониторинга...
+Соединение закрыто
+PS E:\rep\panel> 
+
+
+
+
+
+
+
+
+
+

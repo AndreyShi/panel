@@ -263,14 +263,14 @@ except ImportError:
                     "OBD" in port.description.upper() or
                     "SPP" in port.description)):
                     print(f"Найден Bluetooth ELM327 на порту: {port.device}")
-                    return port.device
+                    return "COM3"
             return None
         
         def connect_via_bluetooth(self, com_port):
             """Подключение через Bluetooth COM порт"""
             try:
-                # Подключение через виртуальный COM порт Bluetooth
-                self.connection = obd.OBD(com_port, baudrate=38400, protocol="auto")
+                print(f"Подключение через виртуальный COM порт Bluetooth {com_port} ")
+                self.connection = obd.OBD(com_port, baudrate=500000, protocol="6",timeout=15)
                 
                 if self.connection.is_connected():
                     print("Bluetooth подключение установлено!")
