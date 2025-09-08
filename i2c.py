@@ -69,9 +69,8 @@ try:
                 deq.append(value)
                 value_avg = (sum(deq) + len(deq) // 2) // len(deq) #целочесленное округление
                 voltage = value_avg * VOLTAGE_COEF # Конвертация в напряжение
-                voltage_round = round(voltage, 3)
-                R2 = R1 * (voltage_round / (VCC - voltage_round))  # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
-                print(f"value: {value}, value_avg: {value_avg}, voltage: {voltage:.3f}, voltage_round: {voltage_round:.3f} R2: {R2:.3f}")
+                R2 = R1 * (voltage / (VCC - voltage))  # Рассчет подсоединенного  сопротивления в схеме делителя напряжения
+                print(f"value: {value}, value_avg: {value_avg}, voltage: {voltage:.3f}, R2: {R2:.3f}")
                 if R2 >= 300:
                     R2 = 300
                 elif R2 <= 0:
