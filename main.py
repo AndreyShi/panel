@@ -34,9 +34,11 @@ def main():
     #thread_uart = Thread(target=uart_device.task_GPSReader, name="thread_uart",args=(stop_event, ))
     #thread_uart.start()
 
-    OBD2 = ELM327Bluetooth()
-    thread_OBD2 = Thread(target=OBD2.task_ELM327BL, name="task_ELM327BL",args=(stop_event, queues_dict, ))
-    thread_OBD2.start()
+    OBD2 = ELM327Bluetooth(threads_manager=True)
+    thread_OBD2_COOLANT_TEMP = Thread(target=OBD2.task_COOLANT_TEMP, name="task_COOLANT_TEMP",args=(stop_event, queues_dict, ))
+    thread_OBD2_COOLANT_TEMP.start()
+    thread_OBD2_RMP = Thread(target=OBD2.task_RPM, name="task_RMP",args=(stop_event, queues_dict, ))
+    thread_OBD2_RMP.start()
 
     thread_dashboard = Thread(target=dashboard.task_Dashboard, name="task_dasboard",args=(stop_event, arguments, queues_dict ))
     thread_dashboard.start()
@@ -44,7 +46,8 @@ def main():
     thread_dashboard.join()
     #thread_uart.join()
     thread_i2c_ADS1115.join()
-    thread_OBD2.join()
+    thread_OBD2_RMP.join()
+    thread_OBD2_COOLANT_TEMP.join()
     sys.exit()
 
 if __name__ == "__main__":

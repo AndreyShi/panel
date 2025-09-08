@@ -174,7 +174,8 @@ def task_Dashboard(stop_event:Event,
     update_interval_oj_temp = 1.5
     last_update_time_oj_temp = 0.0
     oj_temp = 9
-
+    last_update_time_rmp = 0
+    update_interval_rmp = 0.1
     while not stop_event.is_set():
         start_time = time.time()
         for event in pygame.event.get():
@@ -202,15 +203,16 @@ def task_Dashboard(stop_event:Event,
 
         # Вращение стрелки RMP
         # Обновление угла стрелки RMP(имитация данных)
-        '''
+        current_time = time.time()
+        if current_time - last_update_time_rmp > update_interval_rmp:
+            last_update_time_rmp = current_time
+            try:
+                rmp = queues_dict['rmp'].get_nowait()
+                queues_dict['rmp'].task_done()
+            except Empty:
+                print(f"Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: {rmp:.1f}")
+            angle_rmp = float(rmp) * 110 / 6000.0
 
-        '''
-        try:
-            rmp = queues_dict['rmp'].get_nowait()
-            queues_dict['rmp'].task_done()
-        except Empty:
-            print(f"Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: {rmp}")
-        angle_rmp = float(rmp) * 110 / 6000.0
         rotated_rmp = pygame.transform.rotozoom(rmp_img, -1 * (angle_rmp + 16),1)  # 16...126
         new_rect = rotated_rmp.get_rect(center=rmp_rect.center)
         screen.blit(rotated_rmp, new_rect.topleft)

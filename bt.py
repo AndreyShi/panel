@@ -1,8 +1,15 @@
 import time
-from threading import Event
+from threading import Event, Lock
 from queue import Queue, Full 
 from typing import List
-
+'''
+Параметр	            Рекомендуемый интервал	Частота
+RPM, SPEED	            100-500 ms	            2-10 Hz
+COOLANT_TEMP, THROTTLE	500-2000 ms	            0.5-2 Hz
+FUEL_LEVEL, VOLTAGE	    2000-5000 ms	        0.2-0.5 Hz
+STATUS, DTC	            5000-10000 ms	        0.1-0.2 Hz
+OIL_PRESSURE	        10000-30000 ms	        0.03-0.1 Hz
+'''
 try:
     #sudo apt-get update
     #sudo apt-get install bluetooth bluez python3-bluez
@@ -14,12 +21,81 @@ try:
     from obd.utils import bytes_to_int
 
     class ELM327Bluetooth:
-        def __init__(self):
+        def __init__(self, threads_manager=False):
             self.connection = None
             self.obd_connection = None
+            if threads_manager == True:
+                self.lock = Lock()
+                device_addr = self.discover_devices()                    
+                if device_addr:
+                    self.connect_to_elm327(device_addr)
+                else:
+                    print("не найдено OBD2 устройство")            
+        def safe_obd_query(self, command):
+            with self.lock:
+                response = self.connection.query(command)
+                return response
+        def task_COOLANT_TEMP(self, stop_event:Event, queues_dict):          
+            if self.connection.is_connected() == OBDStatus.NOT_CONNECTED:
+                toup_oj_temp = True
+                oj_temp = 0
+                while not stop_event.is_set():
+                    if toup_oj_temp:  # Движение вверх
+                        oj_temp += 1 #random.uniform(0.0, 13.0)
+                        if oj_temp >= 99:
+                            oj_temp = 99
+                            toup_oj_temp = False  # достигли верха - идем вниз
+                    else:        # Движение вниз
+                        oj_temp -= 1  #random.uniform(0.0, 3.0)
+                        if oj_temp <= 0:
+                            oj_temp = 0
+                            toup_oj_temp = True   # достигли низа - идем вверх
+                    try:
+                        queues_dict['oj_temp'].put(oj_temp, timeout=1.0)                    
+                    except Full:
+                        print(f"Очередь queues_dict['oj_temp'] переполнена, данные oj_temp: {oj_temp} потеряны") 
+                    stop_event.wait(1)
+            else:
+                while not stop_event.is_set():
+                    response = self.safe_obd_query(obd.commands.COOLANT_TEMP)
+                    if not response.is_null():
+                        try:
+                            oj_temp = response.value.magnitude
+                            queues_dict['oj_temp'].put(oj_temp, timeout = 1.0)
+                        except Full:
+                            print(f"Очередь oj_temp переполнена, данные: {oj_temp} потеряны") 
+                    stop_event.wait(1)
+
+        def task_RPM(self, stop_event:Event, queues_dict):
+            if self.connection.is_connected() == OBDStatus.NOT_CONNECTED:
+                angle_rmp = 0
+                toup_rmp = True
+                while not stop_event.is_set():
+                    if angle_rmp < 109 and toup_rmp == True:
+                        angle_rmp = (angle_rmp + 1) % 110
+                    elif angle_rmp == 0:
+                        toup_rmp = True
+                    else:
+                        angle_rmp = (angle_rmp - 1) % 110
+                        toup_rmp = False
+                        rmp = angle_rmp * 6000/110 
+                    try:
+                        queues_dict['rmp'].put(rmp, timeout=1.0)                    
+                    except Full:
+                        print(f"Очередь queues_dict['rmp'] переполнена, данные rmp: {rmp:.1f} потеряны")
+                    stop_event.wait(0.1)
+            else:
+                while not stop_event.is_set():
+                    response = self.safe_obd_query(obd.commands.RMP)
+                    if not response.is_null():
+                        try:
+                            rmp = response.value.magnitude
+                            queues_dict['rmp'].put(rmp, timeout=1.0)
+                        except Full:
+                            print(f"Очередь rmp переполнена, данные: {rmp} потеряны") 
+                    stop_event.wait(0.1)
             
         def discover_devices(self):
-            """Поиск Bluetooth устройств"""
             print("Поиск Bluetooth устройств...")
             devices = bluetooth.discover_devices(lookup_names=True)
             
@@ -246,11 +322,86 @@ except ImportError:
     #pip install obd pyserial
     import obd
     import time
-    from obd import OBDCommand, Unit
+    from obd import OBDCommand, Unit, OBDStatus
     import serial.tools.list_ports
     class ELM327Bluetooth:
-        def __init__(self):
+        def __init__(self, threads_manager=False):
             self.connection = None
+            self.obd_connection = False
+            if threads_manager == True:
+                self.lock = Lock()
+                com_port = self.find_bluetooth_com_port()                    
+                if com_port:
+                    self.obd_connection = self.connect_via_bluetooth(com_port)
+                else:
+                    print("не найден COM порт")
+        def safe_obd_query(self, command):
+            with self.lock:
+                response = self.connection.query(command)
+                return response
+        def task_COOLANT_TEMP(self, stop_event:Event, queues_dict):          
+            if self.obd_connection == False:
+                toup_oj_temp = True
+                oj_temp = 0
+                while not stop_event.is_set():
+                    if toup_oj_temp:  # Движение вверх
+                        oj_temp += 1 #random.uniform(0.0, 13.0)
+                        if oj_temp >= 99:
+                            oj_temp = 99
+                            toup_oj_temp = False  # достигли верха - идем вниз
+                    else:        # Движение вниз
+                        oj_temp -= 1  #random.uniform(0.0, 3.0)
+                        if oj_temp <= 0:
+                            oj_temp = 0
+                            toup_oj_temp = True   # достигли низа - идем вверх
+                    try:
+                        queues_dict['oj_temp'].put(oj_temp, timeout=1.0)                    
+                    except Full:
+                        print(f"Очередь queues_dict['oj_temp'] переполнена, данные oj_temp: {oj_temp} потеряны") 
+                    stop_event.wait(1)
+            else:
+                while not stop_event.is_set():
+                    response = self.safe_obd_query(obd.commands.COOLANT_TEMP)
+                    if not response.is_null():
+                        try:
+                            oj_temp = response.value.magnitude
+                            queues_dict['oj_temp'].put(oj_temp, timeout = 1.0)
+                        except Full:
+                            print(f"Очередь oj_temp переполнена, данные: {oj_temp} потеряны") 
+                    stop_event.wait(1)
+
+        def task_RPM(self, stop_event:Event, queues_dict):
+            if self.obd_connection == False:
+                angle_rmp = 0
+                toup_rmp = True
+                rmp = 0
+                while not stop_event.is_set():
+                    if toup_rmp:  
+                        angle_rmp += 1 
+                        if angle_rmp >= 110:
+                            angle_rmp = 110
+                            toup_rmp = False  
+                    else:        
+                        angle_rmp -= 1  
+                        if angle_rmp <= 0:
+                            angle_rmp = 0
+                            toup_rmp = True   
+                    rmp = angle_rmp * 6000/110 
+                    try:
+                        queues_dict['rmp'].put(rmp, timeout=1.0)                    
+                    except Full:
+                        print(f"Очередь queues_dict['rmp'] переполнена, данные rmp: {rmp:.1f} потеряны")
+                    stop_event.wait(0.1)
+            else:
+                while not stop_event.is_set():
+                    response = self.safe_obd_query(obd.commands.RMP)
+                    if not response.is_null():
+                        try:
+                            rmp = response.value.magnitude
+                            queues_dict['rmp'].put(rmp, timeout=1.0)
+                        except Full:
+                            print(f"Очередь rmp переполнена, данные: {rmp} потеряны") 
+                    stop_event.wait(0.1)
         
         def find_bluetooth_com_port(self):
             """Поиск COM порта Bluetooth ELM327"""
@@ -269,9 +420,7 @@ except ImportError:
             return None
         
         def connect_via_bluetooth(self, com_port):
-            """Подключение через Bluetooth COM порт"""
             try:
-                print(f"Подключение через виртуальный COM порт Bluetooth {com_port} ")
                 self.connection = obd.OBD(com_port, baudrate=500000, protocol="6",timeout=15)
                 
                 if self.connection.is_connected():
