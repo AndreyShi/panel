@@ -29,7 +29,7 @@ def get_cpu_temp():
 
 def task_Dashboard(stop_event:Event, 
                    arguments: Literal['-w',''], 
-                   que:       List[Queue]):
+                   Que:       List[Queue]):
     # Цвета
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
@@ -151,7 +151,7 @@ def task_Dashboard(stop_event:Event,
 
 
 
-    angle_rmp = 125  # Начальный угол
+    angle_rmp = 0  # Начальный угол
     angle = 0      # Начальный угол
 
     # Основной цикл
@@ -164,7 +164,7 @@ def task_Dashboard(stop_event:Event,
 
     fuel_y = 0
     R2 = 0
-
+    rmp = '0.0'
     # Таймеры
     last_update_time = time.time()
     update_interval = 0.25  # Обновлять скорость каждые 0.5 секунды
@@ -181,6 +181,10 @@ def task_Dashboard(stop_event:Event,
                 if event.key == pygame.K_ESCAPE:  # Выход по ESC
                     stop_event.set()
 
+        # Отрисовка
+        screen.blit(background, (0, 0))
+
+        # Вращение стрелки Скорости
         # Обновление угла стрелки Скорости(имитация данных)
         if angle < 119 and toup == True:
             angle = (angle + 1) % 120
@@ -189,9 +193,13 @@ def task_Dashboard(stop_event:Event,
         else:
             angle = (angle - 1) % 120
             toup = False
+        rotated_needle = pygame.transform.rotozoom(needle_img, ccw * (angle + 228),1)  # Минус для правильного направления
+        new_rect = rotated_needle.get_rect(center=needle_rect.center)
+        screen.blit(rotated_needle, new_rect.topleft)
 
+        # Вращение стрелки RMP
         # Обновление угла стрелки RMP(имитация данных)
-        #angle_rmp = (angle_rmp + 1) % 115
+        '''
         if angle_rmp < 114 and toup_rmp == True:
             angle_rmp = (angle_rmp + 1) % 115
         elif angle_rmp == 0:
@@ -199,32 +207,27 @@ def task_Dashboard(stop_event:Event,
         else:
             angle_rmp = (angle_rmp - 1) % 115
             toup_rmp = False
-
-        # Отрисовка
-        screen.blit(background, (0, 0))
-
-        # Вращение стрелки Скорости
-        rotated_needle = pygame.transform.rotozoom(needle_img, ccw * (angle + 228),1)  # Минус для правильного направления
-        new_rect = rotated_needle.get_rect(center=needle_rect.center)
-        screen.blit(rotated_needle, new_rect.topleft)
-
-        # Вращение стрелки RMP
+        '''
+        try:
+            rmp = Que[1].get_nowait()
+            Que[1].task_done()
+        except Empty:
+            print(f"Очередь Que[1] пуста, используются предыдущие данные rmp: {rmp}")
+        angle_rmp = float(rmp) * 115 / 6000.0
         rotated_rmp = pygame.transform.rotozoom(rmp_img, -1 * (angle_rmp + 15),1)  # 15...130
         new_rect = rotated_rmp.get_rect(center=rmp_rect.center)
         screen.blit(rotated_rmp, new_rect.topleft)
 
         # Изменение уровня
         try:
-            R2 = que[0].get_nowait()
-            que[0].task_done()
+            R2 = Que[0].get_nowait()
+            Que[0].task_done()
         except Empty:
-            print(f"Очередь que[0] пуста, используются предыдущие данные R2: {R2}")
+            print(f"Очередь Que[0] пуста, используются предыдущие данные R2: {R2}")
 
         fuel_y =  (300 - R2) * (94 / 300) 
-
         # Вычисляем высоту бензина
         fuel_level = 1 - (fuel_y / 94)
-
         # В игровом цикле:
         current_fuel_height = int(empty_canister_img.get_height() * fuel_level)
         # Рисуем пустую канистру

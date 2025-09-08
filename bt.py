@@ -1,5 +1,7 @@
 import time
 from threading import Event
+from queue import Queue, Full 
+from typing import List
 
 try:
     #sudo apt-get update
@@ -199,7 +201,7 @@ try:
                 self.obd_connection.close()
             print("Соединения закрыты")
         
-        def task_ELM327BL(self, stop_event:Event):        
+        def task_ELM327BL(self, stop_event:Event, Que:List[Queue]):        
             try:
                 # Поиск устройства
                 device_addr = self.discover_devices()
@@ -322,20 +324,32 @@ except ImportError:
                 
             return data
         
-        def monitor_data(self, stop_event:Event=None):
+        def monitor_data(self, stop_event:Event=None, Que:List[Queue]=None):
             """Мониторинг данных в реальном времени"""
             print("Мониторинг данных OBD2...")
             print("Нажмите Ctrl+C для остановки")
             print("-" * 50)
             if stop_event is None:
-                stop_event = Event()
-            
+                stop_event = Event() 
             try:
                 while not stop_event.is_set():
                     data = self.get_obd_data()
                     
-                    print(f"Температура ОЖ: {data.get('coolant_temp', 'N/A')}°C")
-                    print(f"Обороты: {data.get('rpm', 'N/A')} об/мин")
+                    oj_temp = data.get('coolant_temp', 'N/A')
+                    print(f"Температура ОЖ: {oj_temp}°C")
+                    if Que is not None:
+                        try:
+                            Que[2].put_nowait(oj_temp)                    
+                        except Full:
+                            print(f"Очередь Que[2] переполнена, данные oj: {oj_temp} потеряны") 
+
+                    rmp = data.get('rpm', 'N/A')
+                    print(f"Обороты: {rmp} об/мин")
+                    if Que is not None:
+                        try:
+                            Que[1].put_nowait(rmp)                    
+                        except Full:
+                            print(f"Очередь Que[1] переполнена, данные rmp: {rmp} потеряны") 
                     
                     check_engine = data.get('check_engine')
                     if check_engine is not None:
@@ -361,7 +375,7 @@ except ImportError:
                 self.connection.close()
                 print("Соединение закрыто")
         
-        def task_ELM327BL(self, stop_event:Event):
+        def task_ELM327BL(self, stop_event:Event, Que:List[Queue]):
             try:
                 # Поиск Bluetooth порта
                 com_port = self.find_bluetooth_com_port()

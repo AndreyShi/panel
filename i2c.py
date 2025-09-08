@@ -27,7 +27,7 @@ try:
                 result = self.bus.read_i2c_block_data(address, REG_CONVERSION, 2)
                 value = (result[0] << 8) | result[1]
                 return value    # разблокируем доступ к шине, в этот момент другой поток приступит к работе с шиной
-        def task_ADS1115(self, stop_event:Event, que:List[Queue]):
+        def task_ADS1115(self, stop_event:Event, Que:List[Queue]):
             # Настройка конфигурации
             OS = 1        # Однократное преобразование
             # Дифференциальные режимы:
@@ -76,9 +76,9 @@ try:
                 elif R2 <= 0:
                      R2 = 0.2
                 try:
-                    que[0].put(R2, timeout=1.0)                      #если что ждем бесконечно потомучто в отдельном потоке
+                    Que[0].put(R2, timeout=1.0)                      
                 except Full:
-                    print(f"Очередь que[0] переполнена, данные R2_avg: {R2} потеряны") 
+                    print(f"Очередь Que[0] переполнена, данные R2_avg: {R2} потеряны") 
 except ImportError:
     # Создаем mock-версию smbus2
     class i2c:
@@ -86,7 +86,7 @@ except ImportError:
             self.bus_number = bus_number
             self.devices = {}  # Виртуальные устройства I2C
             print(f"🖥 i2c: виртуальная шина {bus_number}")
-        def task_ADS1115(self, stop_event:Event, que:List[Queue]):
+        def task_ADS1115(self, stop_event:Event, Que:List[Queue]):
             toup_R2 = True
             R2 = 1  
             while not stop_event.is_set():
@@ -102,8 +102,8 @@ except ImportError:
                         toup_R2 = True   # достигли низа - идем вверх
                 #print(f"R2:  {R2:.2f}")
                 try:             
-                    que[0].put(R2, timeout=1.0)
+                    Que[0].put(R2, timeout=1.0)
                 except Full:
-                    print(f"Очередь que[0] переполнена, данные R2: {R2} потеряны") 
+                    print(f"Очередь Que[0] переполнена, данные R2: {R2} потеряны") 
                 #print(f"put {R2:.3f} {datetime.now().strftime("%S.%f")[:-3]}")
                 
