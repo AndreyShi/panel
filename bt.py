@@ -154,7 +154,7 @@ try:
             except:
                 return None
         
-        def read_data_continuously(self, stop_event:Event=None):
+        def read_data_continuously(self, stop_event:Event=None,queues_dict=None):
             """Непрерывное чтение данных"""
             print("Начинаем чтение данных...")
             if stop_event is None:
@@ -201,7 +201,7 @@ try:
                 self.obd_connection.close()
             print("Соединения закрыты")
         
-        def task_ELM327BL(self, stop_event:Event, Que:List[Queue]):        
+        def task_ELM327BL(self, stop_event:Event, queues_dict):        
             try:
                 # Поиск устройства
                 device_addr = self.discover_devices()
@@ -210,7 +210,7 @@ try:
                     # Подключение
                     if self.connect_to_elm327(device_addr):
                         # Чтение данных
-                        self.read_data_continuously(stop_event)
+                        self.read_data_continuously(stop_event,queues_dict)
                     else:
                         print("Не удалось подключиться к ELM327")
                 else:
@@ -265,7 +265,7 @@ except ImportError:
                     "OBD" in port.description.upper() or
                     "SPP" in port.description)):
                     print(f"Найден Bluetooth ELM327 на порту: {port.device}")
-                    return "COM3"
+                    return port.device
             return None
         
         def connect_via_bluetooth(self, com_port):
@@ -324,7 +324,7 @@ except ImportError:
                 
             return data
         
-        def monitor_data(self, stop_event:Event=None, Que:List[Queue]=None):
+        def monitor_data(self, stop_event:Event=None, queues_dict=None):
             """Мониторинг данных в реальном времени"""
             print("Мониторинг данных OBD2...")
             print("Нажмите Ctrl+C для остановки")
@@ -337,19 +337,19 @@ except ImportError:
                     
                     oj_temp = data.get('coolant_temp', 'N/A')
                     print(f"Температура ОЖ: {oj_temp}°C")
-                    if Que is not None:
+                    if queues_dict is not None:
                         try:
-                            Que[2].put_nowait(oj_temp)                    
+                            queues_dict['oj_temp'].put_nowait(oj_temp)                    
                         except Full:
-                            print(f"Очередь Que[2] переполнена, данные oj: {oj_temp} потеряны") 
+                            print(f"Очередь queues_dict['oj_temp'] переполнена, данные oj_temp: {oj_temp} потеряны") 
 
                     rmp = data.get('rpm', 'N/A')
                     print(f"Обороты: {rmp} об/мин")
-                    if Que is not None:
+                    if queues_dict is not None:
                         try:
-                            Que[1].put_nowait(rmp)                    
+                            queues_dict['rmp'].put_nowait(rmp)                    
                         except Full:
-                            print(f"Очередь Que[1] переполнена, данные rmp: {rmp} потеряны") 
+                            print(f"Очередь queues_dict['rmp'] переполнена, данные rmp: {rmp} потеряны") 
                     
                     check_engine = data.get('check_engine')
                     if check_engine is not None:
@@ -375,7 +375,7 @@ except ImportError:
                 self.connection.close()
                 print("Соединение закрыто")
         
-        def task_ELM327BL(self, stop_event:Event, Que:List[Queue]):
+        def task_ELM327BL(self, stop_event:Event, queues_dict):
             try:
                 # Поиск Bluetooth порта
                 com_port = self.find_bluetooth_com_port()
@@ -384,7 +384,7 @@ except ImportError:
                     # Подключение
                     if self.connect_via_bluetooth(com_port):
                         # Запуск мониторинга
-                        self.monitor_data(stop_event)
+                        self.monitor_data(stop_event, queues_dict)
                     else:
                         print("Не удалось подключиться. Проверьте:")
                         print("1. Bluetooth включен на ПК и адаптере")
@@ -397,11 +397,59 @@ except ImportError:
                     print("2. Найдите устройство 'ELM327' или 'OBD'")
                     print("3. Сопрягите (пароль обычно 1234)")
                     print("4. Запустите программу снова")
-                    
+                    #симуляция
+                    self.simulation(stop_event, queues_dict)
             except Exception as e:
                 print(f"Ошибка: {e}")
             finally:
                 self.close()
+
+        def simulation(self, stop_event:Event, queues_dict):
+            toup_rmp = True
+            angle_rmp = 0.0
+            toup_oj_temp = True
+            oj_temp = 0.0
+            intervals =   {'rpm': 0.01,'oj_temp': 1.0}
+            last_update = {'rpm': 0  ,'oj_temp': 0}
+            while not stop_event.is_set():
+                stop_event.wait(0.01)
+                current_time = time.time()
+                if current_time - last_update['rpm'] > intervals['rpm']:
+                    last_update['rpm'] = current_time
+                    if angle_rmp < 109 and toup_rmp == True:
+                        angle_rmp = (angle_rmp + 1) % 110
+                    elif angle_rmp == 0:
+                        toup_rmp = True
+                    else:
+                        angle_rmp = (angle_rmp - 1) % 110
+                        toup_rmp = False
+                    rmp = angle_rmp * 6000/110 
+                    try:
+                        queues_dict['rmp'].put(rmp,timeout=1.0)                    
+                    except Full:
+                        print(f"Очередь queues_dict['rmp'] переполнена, данные rmp: {rmp:.1f} потеряны")
+
+                current_time = time.time()
+                if current_time - last_update['oj_temp'] > intervals['oj_temp']:
+                    last_update['oj_temp'] = current_time
+                    if toup_oj_temp:  # Движение вверх
+                        oj_temp += 1 #random.uniform(0.0, 13.0)
+                        if oj_temp >= 99:
+                            oj_temp = 99
+                            toup_oj_temp = False  # достигли верха - идем вниз
+                    else:        # Движение вниз
+                        oj_temp -= 1  #random.uniform(0.0, 3.0)
+                        if oj_temp <= 0:
+                            oj_temp = 0
+                            toup_oj_temp = True   # достигли низа - идем вверх
+                    try:
+                        queues_dict['oj_temp'].put(oj_temp,timeout=0.2)                    
+                    except Full:
+                        print(f"Очередь queues_dict['oj_temp'] переполнена, данные oj_temp: {oj_temp} потеряны") 
+                
+                    
+                    
+
 
     # Основная программа
     if __name__ == "__main__":

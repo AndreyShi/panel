@@ -27,7 +27,7 @@ try:
                 result = self.bus.read_i2c_block_data(address, REG_CONVERSION, 2)
                 value = (result[0] << 8) | result[1]
                 return value    # разблокируем доступ к шине, в этот момент другой поток приступит к работе с шиной
-        def task_ADS1115(self, stop_event:Event, Que:List[Queue]):
+        def task_ADS1115(self, stop_event:Event, queues_dict):
             # Настройка конфигурации
             OS = 1        # Однократное преобразование
             # Дифференциальные режимы:
@@ -76,9 +76,9 @@ try:
                 elif R2 <= 0:
                      R2 = 0.2
                 try:
-                    Que[0].put(R2, timeout=1.0)                      
+                    queues_dict['R2_canister_1'].put(R2, timeout=1.0)                
                 except Full:
-                    print(f"Очередь Que[0] переполнена, данные R2_avg: {R2} потеряны") 
+                    print(f"Очередь R2_canister_1 переполнена, данные R2: {R2} потеряны") 
 except ImportError:
     # Создаем mock-версию smbus2
     class i2c:
@@ -86,7 +86,7 @@ except ImportError:
             self.bus_number = bus_number
             self.devices = {}  # Виртуальные устройства I2C
             print(f"🖥 i2c: виртуальная шина {bus_number}")
-        def task_ADS1115(self, stop_event:Event, Que:List[Queue]):
+        def task_ADS1115(self, stop_event:Event, queues_dict):
             toup_R2 = True
             R2 = 1  
             while not stop_event.is_set():
@@ -101,9 +101,9 @@ except ImportError:
                         R2 = 0.2
                         toup_R2 = True   # достигли низа - идем вверх
                 #print(f"R2:  {R2:.2f}")
-                try:             
-                    Que[0].put(R2, timeout=1.0)
+                try:
+                    queues_dict['R2_canister_1'].put(R2, timeout=1.0)                
                 except Full:
-                    print(f"Очередь Que[0] переполнена, данные R2: {R2} потеряны") 
+                    print(f"Очередь R2_canister_1 переполнена, данные R2: {R2} потеряны") 
                 #print(f"put {R2:.3f} {datetime.now().strftime("%S.%f")[:-3]}")
                 

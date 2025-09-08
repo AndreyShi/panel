@@ -29,7 +29,7 @@ def get_cpu_temp():
 
 def task_Dashboard(stop_event:Event, 
                    arguments: Literal['-w',''], 
-                   Que:       List[Queue]):
+                   queues_dict):
     # Цвета
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
@@ -146,8 +146,9 @@ def task_Dashboard(stop_event:Event,
     time_font = pygame.font.SysFont(main_shrift, 46,bold=True)
 
     # Загрузка шрифта скорости
-    font = pygame.font.SysFont(main_shrift, 70,bold=False)
-
+    font_speed = pygame.font.SysFont(main_shrift, 70,bold=False)
+    # Загрузка шрифта температуры охлаждающей жидкости
+    font_oj_temp = pygame.font.SysFont(main_shrift, 35,bold=False)
 
 
 
@@ -166,11 +167,13 @@ def task_Dashboard(stop_event:Event,
     R2 = 0
     rmp = '0.0'
     # Таймеры
-    last_update_time = time.time()
-    update_interval = 0.25  # Обновлять скорость каждые 0.5 секунды
-    speed_text = font.render(f"{int(angle*0.73)}", True, WHITE)
-
-
+    last_update_time_speed = time.time()
+    update_interval_speed = 0.25  # Обновлять скорость каждые 0.5 секунды
+    speed_text = font_speed.render(f"{int(angle*0.73)}", True, WHITE)
+    speed_text_rect = speed_text.get_rect(left=510, top=25) 
+    update_interval_oj_temp = 1.5
+    last_update_time_oj_temp = 0.0
+    oj_temp = 9
 
     while not stop_event.is_set():
         start_time = time.time()
@@ -200,30 +203,24 @@ def task_Dashboard(stop_event:Event,
         # Вращение стрелки RMP
         # Обновление угла стрелки RMP(имитация данных)
         '''
-        if angle_rmp < 114 and toup_rmp == True:
-            angle_rmp = (angle_rmp + 1) % 115
-        elif angle_rmp == 0:
-            toup_rmp = True
-        else:
-            angle_rmp = (angle_rmp - 1) % 115
-            toup_rmp = False
+
         '''
         try:
-            rmp = Que[1].get_nowait()
-            Que[1].task_done()
+            rmp = queues_dict['rmp'].get_nowait()
+            queues_dict['rmp'].task_done()
         except Empty:
-            print(f"Очередь Que[1] пуста, используются предыдущие данные rmp: {rmp}")
-        angle_rmp = float(rmp) * 115 / 6000.0
-        rotated_rmp = pygame.transform.rotozoom(rmp_img, -1 * (angle_rmp + 15),1)  # 15...130
+            print(f"Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: {rmp}")
+        angle_rmp = float(rmp) * 110 / 6000.0
+        rotated_rmp = pygame.transform.rotozoom(rmp_img, -1 * (angle_rmp + 16),1)  # 16...126
         new_rect = rotated_rmp.get_rect(center=rmp_rect.center)
         screen.blit(rotated_rmp, new_rect.topleft)
 
         # Изменение уровня
         try:
-            R2 = Que[0].get_nowait()
-            Que[0].task_done()
+            R2 = queues_dict['R2_canister_1'].get_nowait()
+            queues_dict['R2_canister_1'].task_done()
         except Empty:
-            print(f"Очередь Que[0] пуста, используются предыдущие данные R2: {R2}")
+            print(f"Очередь queues_dict['R2_canister_1'] пуста, используются предыдущие данные R2: {R2:.2f}")
 
         fuel_y =  (300 - R2) * (94 / 300) 
         # Вычисляем высоту бензина
@@ -251,10 +248,31 @@ def task_Dashboard(stop_event:Event,
 
         #Отображение скорости километры в час
         current_time = time.time()
-        if current_time - last_update_time > update_interval:
-            last_update_time = current_time
-            speed_text = font.render(f"{int(angle*0.73)}", True, WHITE)
-        screen.blit(speed_text, (480, 25))
+        if current_time - last_update_time_speed > update_interval_speed:
+            last_update_time_speed = current_time
+            speed_value = int(angle * 0.73)  # Получаем значение скорости
+            speed_text = font_speed.render(f"{speed_value}", True, WHITE)
+            if speed_value < 10:
+                speed_text_rect = speed_text.get_rect(left=510, top=25)                # Для скоростей 0-9: выравнивание по правому краю
+            else:
+                speed_text_rect = speed_text.get_rect(left=480, top=25)                # Для скоростей 10+: обычное позиционирование
+        screen.blit(speed_text, speed_text_rect)
+
+        #отображаем температуру охлаждающей жидкости
+        current_time = time.time()
+        if current_time - last_update_time_oj_temp > update_interval_oj_temp:
+            last_update_time_oj_temp = current_time
+            try:
+                oj_temp = queues_dict['oj_temp'].get_nowait()
+                queues_dict['oj_temp'].task_done()
+            except Empty:
+                print(f"Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: {oj_temp}")
+            oj_temp_text = font_oj_temp.render(f"{int(oj_temp)}", True, WHITE)
+            if oj_temp < 10:
+                oj_temp_text_rect = oj_temp_text.get_rect(left=510, top=118)                # Для скоростей 0-9: выравнивание по правому краю
+            else:
+                oj_temp_text_rect = oj_temp_text.get_rect(left=494, top=118)                # Для скоростей 10+: обычное позиционирование
+        screen.blit(oj_temp_text, oj_temp_text_rect)
 
         # Отображаем вентилятор
         current_time = time.time()
