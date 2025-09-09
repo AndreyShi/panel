@@ -24,19 +24,20 @@ try:
         def __init__(self, threads_manager=False):
             self.connection = None
             self.obd_connection = None
+            self.connection_ok = False
+            self.lock = Lock()
             if threads_manager == True:
-                self.lock = Lock()
                 device_addr = self.discover_devices()                    
                 if device_addr:
-                    self.connect_to_elm327(device_addr)
+                    self.connection_ok = self.connect_to_elm327(device_addr)
                 else:
                     print("не найдено OBD2 устройство")            
         def safe_obd_query(self, command):
             with self.lock:
-                response = self.connection.query(command)
+                response = self.obd_connection.query(command)
                 return response
         def task_COOLANT_TEMP(self, stop_event:Event, queues_dict):          
-            if self.connection.is_connected() == OBDStatus.NOT_CONNECTED:
+            if self.connection_ok == False:
                 toup_oj_temp = True
                 oj_temp = 0
                 while not stop_event.is_set():
@@ -67,7 +68,7 @@ try:
                     stop_event.wait(1)
 
         def task_RPM(self, stop_event:Event, queues_dict):
-            if self.connection.is_connected() == OBDStatus.NOT_CONNECTED:
+            if self.connection_ok == False:
                 angle_rmp = 0
                 toup_rmp = True
                 while not stop_event.is_set():
@@ -116,8 +117,8 @@ try:
                 print("Подключение установлено!")
                 
                 # Настройка OBD соединения
-                self.setup_obd_connection()
-                return True
+                result = self.setup_obd_connection()
+                return result
                 
             except Exception as e:
                 print(f"Ошибка подключения: {e}")
@@ -128,14 +129,16 @@ try:
             try:
                 # Создаем пользовательские команды для ISO27145-4
                 self.setup_custom_commands()
-                
+                result = False
                 # Подключаемся через pyOBD
                 ports = obd.scan_serial()
                 if ports:
                     self.obd_connection = obd.OBD(ports[0], protocol="ISO_14230_4_5baud")
                     print("OBD соединение установлено!")
+                    result = True
                 else:
                     print("OBD порты не найдены")
+                return result
                     
             except Exception as e:
                 print(f"Ошибка настройки OBD: {e}")
@@ -439,7 +442,8 @@ except ImportError:
         def get_obd_data(self):
             """Получение всех данных"""
             data = {}
-            
+            if self.connection is None:
+                return data
             try:
                 # Температура охлаждающей жидкости
                 response = self.connection.query(obd.commands.COOLANT_TEMP)
@@ -526,27 +530,12 @@ except ImportError:
         
         def task_ELM327BL(self, stop_event:Event, queues_dict):
             try:
-                # Поиск Bluetooth порта
-                com_port = self.find_bluetooth_com_port()
-                
+                com_port = self.find_bluetooth_com_port() # Поиск Bluetooth порта 
                 if com_port:
-                    # Подключение
-                    if self.connect_via_bluetooth(com_port):
-                        # Запуск мониторинга
-                        self.monitor_data(stop_event, queues_dict)
-                    else:
-                        print("Не удалось подключиться. Проверьте:")
-                        print("1. Bluetooth включен на ПК и адаптере")
-                        print("2. Адаптер сопряжен с Windows")
-                        print("3. Зажигание включено")
+                    if self.connect_via_bluetooth(com_port): # Подключение
+                        self.monitor_data(stop_event, queues_dict) # Запуск мониторинга
                 else:
-                    print("Bluetooth ELM327 не найден!")
-                    print("Выполните сопряжение вручную:")
-                    print("1. Откройте настройки Bluetooth")
-                    print("2. Найдите устройство 'ELM327' или 'OBD'")
-                    print("3. Сопрягите (пароль обычно 1234)")
-                    print("4. Запустите программу снова")
-                    #симуляция
+                    print("не найден COM порт")
                     self.simulation(stop_event, queues_dict)
             except Exception as e:
                 print(f"Ошибка: {e}")
