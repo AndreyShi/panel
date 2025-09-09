@@ -1,5 +1,8 @@
 import obd
 import bluetooth
+import subprocess
+import time
+import os
 
 def main():
     # 1. Подключаем Bluetooth socket
@@ -8,11 +11,25 @@ def main():
     sock.connect((device_address, 1))
     print("Bluetooth socket подключен")
 
+    print("Создаем RFCOMM порт...")
+    subprocess.run(['sudo', 'rfcomm', 'release', 'all'], check=False)
+    subprocess.run(['sudo', 'rfcomm', 'bind', '/dev/rfcomm0', device_address, '1'], check=True)
+    time.sleep(2)
+        
+    # 2. Даем права
+    subprocess.run(['sudo', 'chmod', '666', '/dev/rfcomm0'], check=True)
+        
+    # 3. Проверяем что порт создан
+    if not os.path.exists('/dev/rfcomm0'):
+        print("Ошибка: порт /dev/rfcomm0 не создан")
+        return None
+
+
     # 2. Используем прямое socket подключение (обход scan_serial)
     try:
         # Формат для socket подключения
         connection = obd.OBD(
-            portstr=f"socket://{device_address}:1",
+            portstr='/dev/rfcomm0',
             baudrate=38400,
             timeout=30,
             fast=False

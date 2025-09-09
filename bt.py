@@ -2,6 +2,9 @@ import time
 from threading import Event, Lock
 from queue import Queue, Full 
 from typing import List
+import subprocess
+import time
+import os
 '''
 Параметр	            Рекомендуемый интервал	Частота
 RPM, SPEED	            100-500 ms	            2-10 Hz
@@ -97,14 +100,14 @@ try:
                     stop_event.wait(0.1)
             else:
                 while not stop_event.is_set():
-                    response = self.safe_obd_query(obd.commands.RMP)
+                    response = self.safe_obd_query(obd.commands.RPM)
                     if not response.is_null():
                         try:
                             rmp = response.value.magnitude
                             queues_dict['rmp'].put(rmp, timeout=1.0)
                         except Full:
                             print(f"Очередь rmp переполнена, данные: {rmp} потеряны") 
-                    stop_event.wait(0.1)
+                    stop_event.wait(0.01)
             
         def discover_devices(self):
             print("Поиск Bluetooth устройств...")
@@ -140,10 +143,21 @@ try:
                 # Создаем пользовательские команды для ISO27145-4
                 #self.setup_custom_commands()
                 result = False
+                print("Создаем RFCOMM порт...")
+                subprocess.run(['sudo', 'rfcomm', 'release', 'all'], check=False)
+                subprocess.run(['sudo', 'rfcomm', 'bind', '/dev/rfcomm0', device_address, '1'], check=True)
+                time.sleep(2)
+        
+                # 2. Даем права
+                subprocess.run(['sudo', 'chmod', '666', '/dev/rfcomm0'], check=True)
+        
+                # 3. Проверяем что порт создан
+                if not os.path.exists('/dev/rfcomm0'):
+                    print("Ошибка: порт /dev/rfcomm0 не создан")
                 # Подключаемся через pyOBD
                 #ports = obd.scan_serial()
                 #if ports:
-                self.obd_connection = obd.OBD(portstr=f"socket://{device_address}:1", baudrate=38400, protocol="6",timeout=30)
+                self.obd_connection = obd.OBD(portstr='/dev/rfcomm0', baudrate=38400, protocol="6",timeout=30)
                 print("OBD соединение установлено!")
                 result = True
                 #else:
