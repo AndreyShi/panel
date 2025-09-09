@@ -127,27 +127,27 @@ try:
                 print("Подключение установлено!")
                 
                 # Настройка OBD соединения
-                result = self.setup_obd_connection()
+                result = self.setup_obd_connection(device_address)
                 return result
                 
             except Exception as e:
                 print(f"Ошибка подключения: {e}")
                 return False
         
-        def setup_obd_connection(self):
+        def setup_obd_connection(self, device_address):
             """Настройка OBD соединения"""
             try:
                 # Создаем пользовательские команды для ISO27145-4
                 #self.setup_custom_commands()
                 result = False
                 # Подключаемся через pyOBD
-                ports = obd.scan_serial()
-                if ports:
-                    self.obd_connection = obd.OBD(ports[0], baudrate=500000, protocol="6",timeout=15)
-                    print("OBD соединение установлено!")
-                    result = True
-                else:
-                    print("OBD порты не найдены")
+                #ports = obd.scan_serial()
+                #if ports:
+                self.obd_connection = obd.OBD(portstr=f"socket://{device_address}:1", baudrate=38400, protocol="6",timeout=30)
+                print("OBD соединение установлено!")
+                result = True
+                #else:
+                #    print("OBD порты не найдены")
                 return result
                     
             except Exception as e:
