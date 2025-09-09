@@ -14,6 +14,14 @@ try:
     #sudo apt-get update
     #sudo apt-get install bluetooth bluez python3-bluez
     #pip3 install pybluez obd
+    # Создание виртуального окружения
+    # python3 -m venv obd_env
+    # Активация окружения
+    # source obd_env/bin/activate
+    # Установка библиотеки в виртуальное окружение
+    #pip install obd
+    # Деактивация (когда закончите работу)
+    # deactivate
     import bluetooth
     import obd
     from obd import OBDCommand, Unit
@@ -26,6 +34,7 @@ try:
             self.obd_connection = None
             self.connection_ok = False
             self.lock = Lock()
+            print("Linux ELM327Bluetooth")
             if threads_manager == True:
                 device_addr = self.discover_devices()                    
                 if device_addr:
@@ -71,6 +80,7 @@ try:
             if self.connection_ok == False:
                 angle_rmp = 0
                 toup_rmp = True
+                rmp = 0
                 while not stop_event.is_set():
                     if angle_rmp < 109 and toup_rmp == True:
                         angle_rmp = (angle_rmp + 1) % 110
@@ -79,7 +89,7 @@ try:
                     else:
                         angle_rmp = (angle_rmp - 1) % 110
                         toup_rmp = False
-                        rmp = angle_rmp * 6000/110 
+                    rmp = angle_rmp * 6000/110 
                     try:
                         queues_dict['rmp'].put(rmp, timeout=1.0)                    
                     except Full:
@@ -128,12 +138,12 @@ try:
             """Настройка OBD соединения"""
             try:
                 # Создаем пользовательские команды для ISO27145-4
-                self.setup_custom_commands()
+                #self.setup_custom_commands()
                 result = False
                 # Подключаемся через pyOBD
                 ports = obd.scan_serial()
                 if ports:
-                    self.obd_connection = obd.OBD(ports[0], protocol="ISO_14230_4_5baud")
+                    self.obd_connection = obd.OBD(ports[0], baudrate=500000, protocol="6",timeout=15)
                     print("OBD соединение установлено!")
                     result = True
                 else:
@@ -282,14 +292,10 @@ try:
         
         def task_ELM327BL(self, stop_event:Event, queues_dict):        
             try:
-                # Поиск устройства
-                device_addr = self.discover_devices()
-                
+                device_addr = self.discover_devices()                # Поиск устройства                
                 if device_addr:
-                    # Подключение
-                    if self.connect_to_elm327(device_addr):
-                        # Чтение данных
-                        self.read_data_continuously(stop_event,queues_dict)
+                    if self.connect_to_elm327(device_addr):                    # Подключение
+                        self.read_data_continuously(stop_event,queues_dict)                        # Чтение данных
                     else:
                         print("Не удалось подключиться к ELM327")
                 else:
@@ -301,17 +307,12 @@ try:
                 self.close_connection()
     # Основная программа
     if __name__ == "__main__":
-        elm = ELM327Bluetooth()
-        
+        elm = ELM327Bluetooth()        
         try:
-            # Поиск устройства
-            device_addr = elm.discover_devices()
-            
+            device_addr = elm.discover_devices()            # Поиск устройства          
             if device_addr:
-                # Подключение
-                if elm.connect_to_elm327(device_addr):
-                    # Чтение данных
-                    elm.read_data_continuously()
+                if elm.connect_to_elm327(device_addr):                # Подключение
+                    elm.read_data_continuously()                    # Чтение данных
                 else:
                     print("Не удалось подключиться к ELM327")
             else:
@@ -323,6 +324,7 @@ try:
             elm.close_connection()
 except ImportError:
     #pip install obd pyserial
+  
     import obd
     import time
     from obd import OBDCommand, Unit, OBDStatus
@@ -331,6 +333,7 @@ except ImportError:
         def __init__(self, threads_manager=False):
             self.connection = None
             self.obd_connection = False
+            print("Windows ELM327Bluetooth")
             if threads_manager == True:
                 self.lock = Lock()
                 com_port = self.find_bluetooth_com_port()                    
@@ -584,11 +587,6 @@ except ImportError:
                         queues_dict['oj_temp'].put(oj_temp,timeout=0.2)                    
                     except Full:
                         print(f"Очередь queues_dict['oj_temp'] переполнена, данные oj_temp: {oj_temp} потеряны") 
-                
-                    
-                    
-
-
     # Основная программа
     if __name__ == "__main__":
         obd_reader = ELM327Bluetooth()

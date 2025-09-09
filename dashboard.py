@@ -25,7 +25,7 @@ def get_cpu_temp():
             temp = int(f.read()) / 1000.0
         return temp
     except:
-        return 0.0
+        return 0
 
 def task_Dashboard(stop_event:Event, 
                    arguments: Literal['-w',''], 
@@ -165,7 +165,7 @@ def task_Dashboard(stop_event:Event,
 
     fuel_y = 0
     R2 = 0
-    rmp = '0.0'
+    rmp = 0
     # Таймеры
     last_update_time_speed = time.time()
     update_interval_speed = 0.25  # Обновлять скорость каждые 0.5 секунды
@@ -176,6 +176,10 @@ def task_Dashboard(stop_event:Event,
     oj_temp = 9
     last_update_time_rmp = 0
     update_interval_rmp = 0.1
+
+    last_update_time_temp = 0
+    update_interval_temp = 1
+
     while not stop_event.is_set():
         start_time = time.time()
         for event in pygame.event.get():
@@ -269,12 +273,20 @@ def task_Dashboard(stop_event:Event,
                 queues_dict['oj_temp'].task_done()
             except Empty:
                 print(f"Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: {oj_temp}")
-            oj_temp_text = font_oj_temp.render(f"{int(oj_temp)}", True, WHITE)
+            oj_temp_text = font_oj_temp.render(f"{int(oj_temp)}c", True, WHITE)
             if oj_temp < 10:
-                oj_temp_text_rect = oj_temp_text.get_rect(left=510, top=118)                # Для скоростей 0-9: выравнивание по правому краю
+                oj_temp_text_rect = oj_temp_text.get_rect(left=510, top=123)                # Для скоростей 0-9: выравнивание по правому краю
             else:
-                oj_temp_text_rect = oj_temp_text.get_rect(left=494, top=118)                # Для скоростей 10+: обычное позиционирование
+                oj_temp_text_rect = oj_temp_text.get_rect(left=494, top=123)                # Для скоростей 10+: обычное позиционирование
         screen.blit(oj_temp_text, oj_temp_text_rect)
+
+        # Отображаем температуру
+        current_time = time.time()
+        if current_time - last_update_time_temp > update_interval_temp:
+            last_update_time_temp = current_time
+            temp = get_cpu_temp()
+            temp_text = time_font.render(f"{int(temp)}", True, (160, 160, 160))
+        screen.blit(temp_text, (717,445))
 
         # Отображаем вентилятор
         current_time = time.time()
