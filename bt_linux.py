@@ -18,8 +18,8 @@ def discover_devices():
 def main():
     # 1. Подключаем Bluetooth socket
     #sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM) 
-    #device_address = "00:1D:A5:06:04:CB"  # Ваш MAC адрес
-    device_address = discover_devices()
+    device_address = "00:1D:A5:06:04:CB"  # Ваш MAC адрес
+    #device_address = discover_devices()
     #sock.connect((device_address, 1))
     #print("Bluetooth socket подключен")
 
@@ -30,9 +30,11 @@ def main():
     time.sleep(2)
         
     # 2. Даем права
+    print("# 2. Даем права")
     subprocess.run(['sudo', 'chmod', '666', '/dev/rfcomm0'], check=True)
         
     # 3. Проверяем что порт создан
+    print("# 3. Проверяем что порт создан")
     if not os.path.exists('/dev/rfcomm0'):
         print("Ошибка: порт /dev/rfcomm0 не создан")
         return None
@@ -61,7 +63,7 @@ def main():
     except Exception as e:
         print(f"Ошибка: {e}")
     finally:
-        sock.close()
+        connection.close()
 
 
 if __name__ == "__main__":
