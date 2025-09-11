@@ -22,29 +22,28 @@ def main():
     #device_address = discover_devices()
     #sock.connect((device_address, 1))
     #print("Bluetooth socket подключен")
-
-    print("Создаем RFCOMM порт...")
+    rfport_name = "rfcomm0"
+    print(f"# 1. Создаем RFCOMM порт: {rfport_name} {device_address}")
     subprocess.run(['sudo', 'rfcomm', 'release', 'all'], check=False)
     #эквивалентно sudo rfcomm bind /dev/rfcomm0 XX:XX:XX:XX:XX:XX 1
-    subprocess.run(['sudo', 'rfcomm', 'bind', '/dev/rfcomm0', device_address, '1'], check=True)
+    subprocess.run(['sudo', 'rfcomm', 'bind', f'/dev/{rfport_name}', device_address, '1'], check=True)
     time.sleep(2)
         
-    # 2. Даем права
-    print("# 2. Даем права")
-    subprocess.run(['sudo', 'chmod', '666', '/dev/rfcomm0'], check=True)
-        
     # 3. Проверяем что порт создан
-    print("# 3. Проверяем что порт создан")
-    if not os.path.exists('/dev/rfcomm0'):
-        print("Ошибка: порт /dev/rfcomm0 не создан")
+    print("# 2. Проверяем что порт создан")
+    if not os.path.exists(f'/dev/{rfport_name}'):
+        print(f"Ошибка: порт /dev/{rfport_name} не создан")
         return None
-
+    
+    # 2. Даем права
+    print("# 3. Даем права")
+    subprocess.run(['sudo', 'chmod', '666', f'/dev/{rfport_name}'], check=True)
 
     # 2. Используем прямое socket подключение (обход scan_serial)
     try:
         # Формат для socket подключения
         connection = obd.OBD(
-            portstr='/dev/rfcomm0',
+            portstr=f'/dev/{rfport_name}',
             baudrate=38400,
             timeout=30,
             fast=False
@@ -52,11 +51,21 @@ def main():
         
         if connection.is_connected():
             print("OBD подключено!")
+            # Проверим поддерживаемые PID
+            supported_commands = connection.supported_commands
+            print("Поддерживаемые команды:")
+            for cmd in supported_commands:
+                print(cmd.name)
+
             # Читаем данные
-            speed = connection.query(obd.commands.SPEED)
-            rpm = connection.query(obd.commands.RPM)
-            print(f"Скорость: {speed.value}")
-            print(f"Обороты: {rpm.value}")
+            cnt  = 3
+            while cnt:
+                speed = connection.query(obd.commands.SPEED)
+                rpm = connection.query(obd.commands.RPM)
+                print(f"Скорость: {speed.value}")
+                print(f"Обороты: {rpm.value}")
+                cnt = cnt - 1
+                time.sleep(1)
         else:
             print("OBD не подключено")
             

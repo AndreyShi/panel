@@ -39,7 +39,8 @@ try:
             self.lock = Lock()
             print("Linux ELM327Bluetooth")
             if threads_manager == True:
-                device_addr = self.discover_devices()                    
+                #device_addr = self.discover_devices()
+                device_addr = "00:1D:A5:06:04:CB"                    
                 if device_addr:
                     self.connection_ok = self.connect_to_elm327(device_addr)
                 else:
@@ -77,6 +78,18 @@ try:
                             queues_dict['oj_temp'].put(oj_temp, timeout = 1.0)
                         except Full:
                             print(f"Очередь oj_temp переполнена, данные: {oj_temp} потеряны") 
+                    status_response = self.safe_obd_query(obd.commands.STATUS)
+                    if not status_response.is_null():
+                        status = status_response.value
+                        print(f"MIL (Check Engine): {status.MIL}")          # True/False
+                        print(f"DTC count: {status.DTC_count}")             # количество ошибок
+                        print(f"Запусков после очистки: {status.ignition_cycles}")
+                    oil_response = self.safe_obd_query(obd.commands.OIL_PRESSURE)
+                    if not oil_response.is_null():
+                        print(f"Давление масла: {oil_response.value}")           # с единицами
+                        print(f"Числовое значение: {oil_response.value.magnitude}")  # только число
+                    else:
+                        print("Давление масла не поддерживается")
                     stop_event.wait(1)
 
         def task_RPM(self, stop_event:Event, queues_dict):
@@ -124,10 +137,10 @@ try:
             """Подключение к ELM327"""
             try:
                 # Подключение через RFCOMM (канал обычно 1)
-                sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-                sock.connect((device_address, 1))
-                self.connection = sock
-                print("Подключение установлено!")
+                #sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+                #sock.connect((device_address, 1))
+                #self.connection = sock
+                #print("Подключение установлено!")
                 
                 # Настройка OBD соединения
                 result = self.setup_obd_connection(device_address)
@@ -142,27 +155,32 @@ try:
             try:
                 # Создаем пользовательские команды для ISO27145-4
                 #self.setup_custom_commands()
+                rfport_name = "rfcomm0"
                 result = False
-                print("Создаем RFCOMM порт...")
+                print(f"Создаем RFCOMM порт: {rfport_name} {device_address}")
                 subprocess.run(['sudo', 'rfcomm', 'release', 'all'], check=False)
-                subprocess.run(['sudo', 'rfcomm', 'bind', '/dev/rfcomm0', device_address, '1'], check=True)
-                time.sleep(2)
-        
-                # 2. Даем права
-                subprocess.run(['sudo', 'chmod', '666', '/dev/rfcomm0'], check=True)
-        
-                # 3. Проверяем что порт создан
-                if not os.path.exists('/dev/rfcomm0'):
-                    print("Ошибка: порт /dev/rfcomm0 не создан")
-                # Подключаемся через pyOBD
-                #ports = obd.scan_serial()
-                #if ports:
-                self.obd_connection = obd.OBD(portstr='/dev/rfcomm0', baudrate=38400, protocol="6",timeout=30)
-                print("OBD соединение установлено!")
-                result = True
-                #else:
-                #    print("OBD порты не найдены")
-                return result
+                subprocess.run(['sudo', 'rfcomm', 'bind', f'/dev/{rfport_name}', device_address, '1'], check=True)
+                time.sleep(2)     
+                # 2. Проверяем что порт создан
+                if not os.path.exists(f'/dev/{rfport_name}'):
+                    print(f"Ошибка: порт /dev/{rfport_name} не создан")
+                    return result
+                else:
+                    # 3. Даем права
+                    subprocess.run(['sudo', 'chmod', '666', f'/dev/{rfport_name}'], check=True)
+                    # Подключаемся через pyOBD
+                    #ports = obd.scan_serial()
+                    #if ports:
+                    self.obd_connection = obd.OBD(portstr=f'/dev/{rfport_name}', baudrate=38400, protocol="6",timeout=30)
+                    if not self.obd_connection.is_connected():
+                        print("OBD соединение не установлено!")
+                        result = False
+                    else:
+                        print("OBD соединение установлено!")
+                        result = True
+                    #else:
+                    #    print("OBD порты не найдены")
+                    return result
                     
             except Exception as e:
                 print(f"Ошибка настройки OBD: {e}")
