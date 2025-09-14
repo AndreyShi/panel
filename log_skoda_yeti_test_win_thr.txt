@@ -1,0 +1,262 @@
+PS E:\rep\panel> python bt_win_test.py
+bt_win_test.py
+Windows ELM327Bluetooth
+Порт: COM3 - Стандартный последовательный порт по соединению Bluetooth (COM3)
+Найден Bluetooth ELM327 на порту: COM3
+Bluetooth подключение установлено!
+Адаптер: COM3
+Протокол: ISO 15765-4 (CAN 11/500)
+Exception in thread task_RMP:
+Traceback (most recent call last):
+  File "C:\msys64\mingw64\lib\python3.9\threading.py", line 973, in _bootstrap_inner
+Нажмите и держите Esc для остановки
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+    self.run()
+Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: 0
+rmp 0, oj_temp 0
+  File "C:\msys64\mingw64\lib\python3.9\threading.py", line 910, in run
+    self._target(*self._args, **self._kwargs)
+  File "E:\rep\panel\bt.py", line 403, in task_RPM
+    response = self.safe_obd_query(obd.commands.RMP)
+AttributeError: 'Commands' object has no attribute 'RMP'
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: 0
+rmp 0, oj_temp 0
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 89
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 88
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 87
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 87
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 86
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 89
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 88
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 87
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 87
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 86
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 90
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 89
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 88
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 87
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 87
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 86
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 89
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 88
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 87
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 87
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 86
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 87
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 86
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 85
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 84
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 84
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 85
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 84
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 84
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 84
+rmp 0, oj_temp 84
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 83
+rmp 0, oj_temp 83
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 83
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 83
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 82
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0
+rmp 0, oj_temp 82
+PS E:\rep\panel> python bt_win_test.py
+bt_win_test.py
+Windows ELM327Bluetooth
+Порт: COM3 - Стандартный последовательный порт по соединению Bluetooth (COM3)
+Найден Bluetooth ELM327 на порту: COM3
+Bluetooth подключение установлено!
+Адаптер: COM3
+Протокол: ISO 15765-4 (CAN 11/500)
+Нажмите и держите Esc для остановки
+Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: 0        
+Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: 0
+rmp 0, oj_temp 0
+rmp 702.0, oj_temp 93
+rmp 699.0, oj_temp 93
+rmp 699.0, oj_temp 93
+rmp 699.5, oj_temp 93
+rmp 695.5, oj_temp 93
+rmp 697.5, oj_temp 93
+rmp 699.0, oj_temp 93
+rmp 696.5, oj_temp 93
+rmp 698.0, oj_temp 93
+rmp 703.0, oj_temp 93
+rmp 729.0, oj_temp 93
+rmp 1241.0, oj_temp 93
+rmp 1750.0, oj_temp 93
+rmp 1063.5, oj_temp 93
+rmp 805.0, oj_temp 93
+rmp 716.5, oj_temp 93
+rmp 717.5, oj_temp 93
+rmp 870.0, oj_temp 93
+rmp 808.0, oj_temp 93
+rmp 731.5, oj_temp 93
+rmp 712.5, oj_temp 94
+rmp 710.0, oj_temp 94
+Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: 0
+rmp 700.0, oj_temp 0
+rmp 696.5, oj_temp 94
+rmp 701.5, oj_temp 94
+rmp 692.0, oj_temp 94
+rmp 696.0, oj_temp 94
+rmp 699.5, oj_temp 94
+rmp 699.5, oj_temp 94
+rmp 701.0, oj_temp 94
+rmp 1155.5, oj_temp 95
+rmp 829.0, oj_temp 95
+rmp 1229.5, oj_temp 95
+rmp 900.5, oj_temp 95
+rmp 736.0, oj_temp 95
+rmp 711.0, oj_temp 95
+rmp 707.0, oj_temp 95
+rmp 704.5, oj_temp 95
+rmp 702.0, oj_temp 95
+rmp 701.0, oj_temp 95
+rmp 700.0, oj_temp 95
+rmp 699.5, oj_temp 95
+rmp 703.5, oj_temp 95
+rmp 702.0, oj_temp 95
+rmp 703.5, oj_temp 96
+Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: 0
+rmp 699.5, oj_temp 0
+rmp 693.5, oj_temp 96
+rmp 706.5, oj_temp 96
+rmp 698.5, oj_temp 96
+rmp 700.5, oj_temp 96
+rmp 699.5, oj_temp 96
+rmp 705.5, oj_temp 96
+rmp 703.5, oj_temp 96
+rmp 697.0, oj_temp 96
+rmp 703.5, oj_temp 96
+rmp 699.5, oj_temp 96
+rmp 696.0, oj_temp 96
+rmp 690.5, oj_temp 96
+rmp 706.5, oj_temp 96
+rmp 705.5, oj_temp 96
+rmp 702.0, oj_temp 96
+rmp 703.0, oj_temp 96
+rmp 702.0, oj_temp 96
+rmp 699.5, oj_temp 96
+rmp 698.5, oj_temp 96
+rmp 703.0, oj_temp 96
+rmp 701.0, oj_temp 96
+rmp 703.0, oj_temp 96
+rmp 695.5, oj_temp 96
+Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: 0
+rmp 696.5, oj_temp 0
+rmp 701.0, oj_temp 96
+rmp 694.0, oj_temp 96
+rmp 705.5, oj_temp 96
+rmp 701.5, oj_temp 96
+rmp 701.5, oj_temp 96
+rmp 704.0, oj_temp 96
+rmp 688.5, oj_temp 96
+rmp 697.0, oj_temp 96
+rmp 702.0, oj_temp 96
+rmp 706.0, oj_temp 96
+rmp 702.0, oj_temp 96
+rmp 704.5, oj_temp 96
+Очередь rmp переполнена, данные: 702.0 потеряны
+PS E:\rep\panel> 
