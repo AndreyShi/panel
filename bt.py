@@ -368,7 +368,7 @@ except ImportError:
             print("Windows ELM327Bluetooth")
             if threads_manager == True:
                 self.lock = Lock()
-                com_port = self.find_bluetooth_com_port()                    
+                com_port = "COM3"#self.find_bluetooth_com_port()                    
                 if com_port:
                     self.obd_connection = self.connect_via_bluetooth(com_port)
                 else:
@@ -432,15 +432,14 @@ except ImportError:
                     stop_event.wait(0.1)
             else:
                 while not stop_event.is_set():
-                    response = self.safe_obd_query(obd.commands.RMP)
+                    response = self.safe_obd_query(obd.commands.RPM)
                     if not response.is_null():
                         try:
                             rmp = response.value.magnitude
                             queues_dict['rmp'].put(rmp, timeout=1.0)
                         except Full:
                             print(f"Очередь rmp переполнена, данные: {rmp} потеряны") 
-                    stop_event.wait(0.1)
-        
+                    stop_event.wait(0.005)
         def find_bluetooth_com_port(self):
             """Поиск COM порта Bluetooth ELM327"""
             ports = serial.tools.list_ports.comports()

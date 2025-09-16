@@ -1,0 +1,10 @@
+PS E:\rep\panel> python main.py
+pygame 2.6.1 (SDL 2.28.4, Python 3.13.7)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+🖥 i2c: виртуальная шина 1
+Windows ELM327Bluetooth
+Порт: COM3 - Стандартный последовательный порт по соединению Bluetooth (COM3)
+Найден Bluetooth ELM327 на порту: COM3
+[obd.elm327] could not open port 'COM3': PermissionError(13, 'Отказано в доступе.', None, 5)
+[obd.obd] Cannot load commands: No connection to car
+Не удалось подключиться по Bluetooth
