@@ -174,11 +174,13 @@ def task_Dashboard(stop_event:Event,
     update_interval_oj_temp = 1.5
     last_update_time_oj_temp = 0.0
     oj_temp = 9
-    last_update_time_rmp = 0
-    update_interval_rmp = 0.1
+    last_update_time_rpm = 0
+    update_interval_rpm = 0.0
 
     last_update_time_temp = 0
     update_interval_temp = 1
+
+    current_rpm = 0
 
     while not stop_event.is_set():
         start_time = time.time()
@@ -205,17 +207,19 @@ def task_Dashboard(stop_event:Event,
         new_rect = rotated_needle.get_rect(center=needle_rect.center)
         screen.blit(rotated_needle, new_rect.topleft)
 
-        # Вращение стрелки RMP
-        # Обновление угла стрелки RMP(имитация данных)
+        # Вращение стрелки RPM
+        # Обновление угла стрелки RPM(имитация данных)
         current_time = time.time()
-        if current_time - last_update_time_rmp > update_interval_rmp:
-            last_update_time_rmp = current_time
+        if current_time - last_update_time_rpm > update_interval_rpm:
+            last_update_time_rpm = current_time
             try:
-                rmp = queues_dict['rmp'].get_nowait()
-                queues_dict['rmp'].task_done()
+                rpm = queues_dict['rpm'].get_nowait()
+                queues_dict['rpm'].task_done()
             except Empty:
-                print(f"Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: {rmp:.1f}")
-            angle_rmp = float(rmp) * 110 / 6000.0
+                print(f"Очередь queues_dict['rpm'] пуста, используются предыдущие данные rmp: {rpm:.1f}")
+            smoothing_factor_rpm = 0.1
+            current_rpm += (rpm - current_rpm) * smoothing_factor_rpm
+            angle_rmp = float(current_rpm) * 110 / 6000.0
 
         rotated_rmp = pygame.transform.rotozoom(rmp_img, -1 * (angle_rmp + 16),1)  # 16...126
         new_rect = rotated_rmp.get_rect(center=rmp_rect.center)

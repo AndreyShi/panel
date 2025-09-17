@@ -10,10 +10,10 @@ def testing(stop_event, queues_dict):
             rmp = 0
             oj_temp = 0
             try:
-                rmp = queues_dict['rmp'].get_nowait()
-                queues_dict['rmp'].task_done()
+                rmp = queues_dict['rpm'].get_nowait()
+                queues_dict['rpm'].task_done()
             except Empty:
-                print(f"Очередь queues_dict['rmp'] пуста, используются предыдущие данные rmp: {rmp}")
+                print(f"Очередь queues_dict['rpm'] пуста, используются предыдущие данные rmp: {rmp}")
 
             try:
                 oj_temp = queues_dict['oj_temp'].get_nowait()
@@ -34,7 +34,7 @@ def main():
     stop_event = Event()
     queues_dict = {
         'R2_canister_1' :Queue(maxsize=1),
-        'rmp'           :Queue(maxsize=1),
+        'rpm'           :Queue(maxsize=1),
         'oj_temp'       :Queue(maxsize=1)
     }
 

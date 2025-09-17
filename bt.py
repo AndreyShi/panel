@@ -107,9 +107,9 @@ try:
                         toup_rmp = False
                     rmp = angle_rmp * 6000/110 
                     try:
-                        queues_dict['rmp'].put(rmp, timeout=1.0)                    
+                        queues_dict['rpm'].put(rmp, timeout=1.0)                    
                     except Full:
-                        print(f"Очередь queues_dict['rmp'] переполнена, данные rmp: {rmp:.1f} потеряны")
+                        print(f"Очередь queues_dict['rpm'] переполнена, данные rmp: {rmp:.1f} потеряны")
                     stop_event.wait(0.1)
             else:
                 while not stop_event.is_set():
@@ -117,7 +117,7 @@ try:
                     if not response.is_null():
                         try:
                             rmp = response.value.magnitude
-                            queues_dict['rmp'].put(rmp, timeout=1.0)
+                            queues_dict['rpm'].put(rmp, timeout=1.0)
                         except Full:
                             print(f"Очередь rmp переполнена, данные: {rmp} потеряны") 
                     stop_event.wait(0.01)
@@ -368,7 +368,7 @@ except ImportError:
             print("Windows ELM327Bluetooth")
             if threads_manager == True:
                 self.lock = Lock()
-                com_port = "COM3"#self.find_bluetooth_com_port()                    
+                com_port = self.find_bluetooth_com_port()                    
                 if com_port:
                     self.obd_connection = self.connect_via_bluetooth(com_port)
                 else:
@@ -415,7 +415,7 @@ except ImportError:
                 rmp = 0
                 while not stop_event.is_set():
                     if toup_rmp:  
-                        angle_rmp += 1 
+                        angle_rmp += 5 
                         if angle_rmp >= 110:
                             angle_rmp = 110
                             toup_rmp = False  
@@ -426,9 +426,9 @@ except ImportError:
                             toup_rmp = True   
                     rmp = angle_rmp * 6000/110 
                     try:
-                        queues_dict['rmp'].put(rmp, timeout=1.0)                    
+                        queues_dict['rpm'].put(rmp, timeout=1.0)                    
                     except Full:
-                        print(f"Очередь queues_dict['rmp'] переполнена, данные rmp: {rmp:.1f} потеряны")
+                        print(f"Очередь queues_dict['rpm'] переполнена, данные rmp: {rmp:.1f} потеряны")
                     stop_event.wait(0.1)
             else:
                 while not stop_event.is_set():
@@ -436,7 +436,7 @@ except ImportError:
                     if not response.is_null():
                         try:
                             rmp = response.value.magnitude
-                            queues_dict['rmp'].put(rmp, timeout=1.0)
+                            queues_dict['rpm'].put(rmp, timeout=1.0)
                         except Full:
                             print(f"Очередь rmp переполнена, данные: {rmp} потеряны") 
                     stop_event.wait(0.005)
@@ -534,9 +534,9 @@ except ImportError:
                     print(f"Обороты: {rmp} об/мин")
                     if queues_dict is not None:
                         try:
-                            queues_dict['rmp'].put_nowait(rmp)                    
+                            queues_dict['rpm'].put_nowait(rmp)                    
                         except Full:
-                            print(f"Очередь queues_dict['rmp'] переполнена, данные rmp: {rmp} потеряны") 
+                            print(f"Очередь queues_dict['rpm'] переполнена, данные rmp: {rmp} потеряны") 
                     
                     check_engine = data.get('check_engine')
                     if check_engine is not None:
@@ -597,9 +597,9 @@ except ImportError:
                         toup_rmp = False
                     rmp = angle_rmp * 6000/110 
                     try:
-                        queues_dict['rmp'].put(rmp,timeout=1.0)                    
+                        queues_dict['rpm'].put(rmp,timeout=1.0)                    
                     except Full:
-                        print(f"Очередь queues_dict['rmp'] переполнена, данные rmp: {rmp:.1f} потеряны")
+                        print(f"Очередь queues_dict['rpm'] переполнена, данные rmp: {rmp:.1f} потеряны")
 
                 current_time = time.time()
                 if current_time - last_update['oj_temp'] > intervals['oj_temp']:

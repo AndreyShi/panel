@@ -21,7 +21,7 @@ def main():
     stop_event = Event()
     queues_dict = {
         'R2_canister_1' :Queue(maxsize=1),
-        'rmp'           :Queue(maxsize=1),
+        'rpm'           :Queue(maxsize=1),
         'oj_temp'       :Queue(maxsize=1)
     }
 
