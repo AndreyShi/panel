@@ -91,7 +91,7 @@ except ImportError:
             R2 = 1  
             while not stop_event.is_set():
                 if toup_R2:  # Движение вверх
-                    R2 += 1 #random.uniform(0.0, 13.0)
+                    R2 += 15 #random.uniform(0.0, 13.0)
                     if R2 >= 300:
                         R2 = 300
                         toup_R2 = False  # достигли верха - идем вниз

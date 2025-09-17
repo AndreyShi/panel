@@ -161,11 +161,10 @@ def task_Dashboard(stop_event:Event,
     ccw = -1
     toup = True
 
-    toup_rmp = True
-
     fuel_y = 0
     R2 = 0
-    rmp = 0
+    current_R2 = 0
+
     # Таймеры
     last_update_time_speed = time.time()
     update_interval_speed = 0.25  # Обновлять скорость каждые 0.5 секунды
@@ -181,6 +180,7 @@ def task_Dashboard(stop_event:Event,
     update_interval_temp = 1
 
     current_rpm = 0
+    rpm = 0
 
     while not stop_event.is_set():
         start_time = time.time()
@@ -216,7 +216,7 @@ def task_Dashboard(stop_event:Event,
                 rpm = queues_dict['rpm'].get_nowait()
                 queues_dict['rpm'].task_done()
             except Empty:
-                print(f"Очередь queues_dict['rpm'] пуста, используются предыдущие данные rmp: {rpm:.1f}")
+                pass#print(f"Очередь queues_dict['rpm'] пуста, используются предыдущие данные rmp: {rpm:.1f}")
             smoothing_factor_rpm = 0.1
             current_rpm += (rpm - current_rpm) * smoothing_factor_rpm
             angle_rmp = float(current_rpm) * 110 / 6000.0
@@ -232,7 +232,10 @@ def task_Dashboard(stop_event:Event,
         except Empty:
             print(f"Очередь queues_dict['R2_canister_1'] пуста, используются предыдущие данные R2: {R2:.2f}")
 
-        fuel_y =  (300 - R2) * (94 / 300) 
+        smoothing_factor_R2 = 0.1
+        current_R2 += (R2 - current_R2) * smoothing_factor_R2
+        #print(f'R2 {R2}  current_R2 {current_R2}')
+        fuel_y =  (300 - current_R2) * (94 / 300) 
         # Вычисляем высоту бензина
         fuel_level = 1 - (fuel_y / 94)
         # В игровом цикле:
