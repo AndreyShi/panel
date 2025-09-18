@@ -7,6 +7,7 @@ try:
     # Или через pip
     #pip install spidev
     import spidev
+    import RPi.GPIO as GPIO
     class spi:
         def __init__(self):
             print("spi работа с железом")
