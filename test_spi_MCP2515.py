@@ -27,6 +27,7 @@ def main():
             # Чтение и вывод значения регистра
             reg_value = spi_.mcp2515_read_register(MCP2515_REG_CANCTRL)
             print(f"CANCTRL: 0x{reg_value:02X} ({reg_value})")
+            time.sleep(0.1) 
             
     except KeyboardInterrupt:
         print("\nТестирование прервано пользователем")

@@ -67,7 +67,7 @@ def task_Dashboard(stop_event:Event,
     except:
         print("Ошибка: arrowkmh_1024_576.png не найден.")
 
-    # Загрузка стрелки RMP
+    # Загрузка стрелки Rpm
     try:
         rmp_img = pygame.image.load("res/arrowRMP_1024_576.png").convert_alpha()  # Важно!
         rmp_rect = rmp_img.get_rect(center=(294, 242))
@@ -216,7 +216,7 @@ def task_Dashboard(stop_event:Event,
                 rpm = queues_dict['rpm'].get_nowait()
                 queues_dict['rpm'].task_done()
             except Empty:
-                pass#print(f"Очередь queues_dict['rpm'] пуста, используются предыдущие данные rmp: {rpm:.1f}")
+                pass#print(f"Очередь queues_dict['rpm'] пуста, используются предыдущие данные rpm: {rpm:.1f}")
             smoothing_factor_rpm = 0.1
             current_rpm += (rpm - current_rpm) * smoothing_factor_rpm
             angle_rmp = float(current_rpm) * 110 / 6000.0

@@ -17,16 +17,16 @@ try:
         def __init__(self):
             print("spi работа с железом")
             # Настройки GPIO для CS (Chip Select)
-            self.CS_PIN_mcp2515 = 8  # GPIO8 (физический пин 24)
+            self.CS_PIN_mcp2515 = 18  # GPIO8 (физический пин 24)
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(self.CS_PIN_mcp2515, GPIO.OUT)
             GPIO.output(self.CS_PIN_mcp2515, GPIO.HIGH)  # CS активен низким уровнем
             # Инициализация SPI
             self.bus = spidev.SpiDev() # композиция
-            self.bus.open(0, 0)  # bus 0, device 0 (CS0)
+            self.bus.open(1, 0)  # bus 0, device 0 (CS0)
             self.bus.max_speed_hz = 100000  # 100 kHz
             self.bus.mode = 0b00  # Режим 0 (CPOL=0, CPHA=0)
-            self.bus.no_cs = True  # Важно! Отключаем автоматическое управление CS
+            self.bus.no_cs = True  # Важно! включаем автоматическое управление CS
         def mcp2515_read_register(self, reg_addr):
             MCP2515_CMD_READ = 0x03
             tx_data = [MCP2515_CMD_READ, reg_addr, 0x00]
@@ -75,7 +75,7 @@ except ImportError:
                 try:
                     queues_dict['rpm'].put(rpm, timeout=1.0)                    
                 except Full:
-                    print(f"Очередь queues_dict['rpm'] переполнена, данные rmp: {rpm:.1f} потеряны")
+                    print(f"Очередь queues_dict['rpm'] переполнена, данные rpm: {rpm:.1f} потеряны")
                 stop_event.wait(0.01)
 
         def task_COOLANTTEMP_and_other(self, stop_event, queues_dict):

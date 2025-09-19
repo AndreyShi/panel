@@ -84,7 +84,7 @@ try:
                         print(f"MIL (Check Engine): {status.MIL}")          # True/False
                         print(f"DTC count: {status.DTC_count}")             # количество ошибок
                         print(f"Запусков после очистки: {status.ignition_cycles}")
-                    oil_response = self.safe_obd_query(obd.commands.OIL_PRESSURE)
+                    oil_response = self.safe_obd_query(obd.commands.FUEL_PRESSURE)
                     if not oil_response.is_null():
                         print(f"Давление масла: {oil_response.value}")           # с единицами
                         print(f"Числовое значение: {oil_response.value.magnitude}")  # только число
@@ -94,33 +94,33 @@ try:
 
         def task_RPM(self, stop_event:Event, queues_dict):
             if self.connection_ok == False:
-                angle_rmp = 0
-                toup_rmp = True
-                rmp = 0
+                angle_rpm = 0
+                toup_rpm = True
+                rpm = 0
                 while not stop_event.is_set():
-                    if angle_rmp < 109 and toup_rmp == True:
-                        angle_rmp = (angle_rmp + 1) % 110
-                    elif angle_rmp == 0:
-                        toup_rmp = True
+                    if angle_rpm < 109 and toup_rpm == True:
+                        angle_rpm = (angle_rpm + 1) % 110
+                    elif angle_rpm == 0:
+                        toup_rpm = True
                     else:
-                        angle_rmp = (angle_rmp - 1) % 110
-                        toup_rmp = False
-                    rmp = angle_rmp * 6000/110 
+                        angle_rmp = (angle_rpm - 1) % 110
+                        toup_rpm = False
+                    rpm = angle_rmp * 6000/110 
                     try:
-                        queues_dict['rpm'].put(rmp, timeout=1.0)                    
+                        queues_dict['rpm'].put(rpm, timeout=1.0)                    
                     except Full:
-                        print(f"Очередь queues_dict['rpm'] переполнена, данные rmp: {rmp:.1f} потеряны")
+                        print(f"Очередь queues_dict['rpm'] переполнена, данные rpm: {rpm:.1f} потеряны")
                     stop_event.wait(0.1)
             else:
                 while not stop_event.is_set():
                     response = self.safe_obd_query(obd.commands.RPM)
                     if not response.is_null():
                         try:
-                            rmp = response.value.magnitude
-                            queues_dict['rpm'].put(rmp, timeout=1.0)
+                            rpm = response.value.magnitude
+                            queues_dict['rpm'].put(rpm, timeout=1.0)
                         except Full:
-                            print(f"Очередь rmp переполнена, данные: {rmp} потеряны") 
-                    stop_event.wait(0.01)
+                            print(f"Очередь rpm переполнена, данные: {rpm} потеряны") 
+                    stop_event.wait(0.05)
             
         def discover_devices(self):
             print("Поиск Bluetooth устройств...")
@@ -410,35 +410,35 @@ except ImportError:
 
         def task_RPM(self, stop_event:Event, queues_dict):
             if self.obd_connection == False:
-                angle_rmp = 0
-                toup_rmp = True
-                rmp = 0
+                angle_rpm = 0
+                toup_rpm = True
+                rpm = 0
                 while not stop_event.is_set():
-                    if toup_rmp:  
-                        angle_rmp += 5 
-                        if angle_rmp >= 110:
-                            angle_rmp = 110
-                            toup_rmp = False  
+                    if toup_rpm:  
+                        angle_rpm += 5 
+                        if angle_rpm >= 110:
+                            angle_rpm = 110
+                            toup_rpm = False  
                     else:        
-                        angle_rmp -= 1  
-                        if angle_rmp <= 0:
-                            angle_rmp = 0
-                            toup_rmp = True   
-                    rmp = angle_rmp * 6000/110 
+                        angle_rpm -= 1  
+                        if angle_rpm <= 0:
+                            angle_rpm = 0
+                            toup_rpm = True   
+                    rpm = angle_rpm * 6000/110 
                     try:
-                        queues_dict['rpm'].put(rmp, timeout=1.0)                    
+                        queues_dict['rpm'].put(rpm, timeout=1.0)                    
                     except Full:
-                        print(f"Очередь queues_dict['rpm'] переполнена, данные rmp: {rmp:.1f} потеряны")
+                        print(f"Очередь queues_dict['rpm'] переполнена, данные rpm: {rpm:.1f} потеряны")
                     stop_event.wait(0.1)
             else:
                 while not stop_event.is_set():
                     response = self.safe_obd_query(obd.commands.RPM)
                     if not response.is_null():
                         try:
-                            rmp = response.value.magnitude
-                            queues_dict['rpm'].put(rmp, timeout=1.0)
+                            rpm = response.value.magnitude
+                            queues_dict['rpm'].put(rpm, timeout=1.0)
                         except Full:
-                            print(f"Очередь rmp переполнена, данные: {rmp} потеряны") 
+                            print(f"Очередь rpm переполнена, данные: {rpm} потеряны") 
                     stop_event.wait(0.005)
         def find_bluetooth_com_port(self):
             """Поиск COM порта Bluetooth ELM327"""
@@ -530,13 +530,13 @@ except ImportError:
                         except Full:
                             print(f"Очередь queues_dict['oj_temp'] переполнена, данные oj_temp: {oj_temp} потеряны") 
 
-                    rmp = data.get('rpm', 'N/A')
-                    print(f"Обороты: {rmp} об/мин")
+                    rpm = data.get('rpm', 'N/A')
+                    print(f"Обороты: {rpm} об/мин")
                     if queues_dict is not None:
                         try:
-                            queues_dict['rpm'].put_nowait(rmp)                    
+                            queues_dict['rpm'].put_nowait(rpm)                    
                         except Full:
-                            print(f"Очередь queues_dict['rpm'] переполнена, данные rmp: {rmp} потеряны") 
+                            print(f"Очередь queues_dict['rpm'] переполнена, данные rpm: {rpm} потеряны") 
                     
                     check_engine = data.get('check_engine')
                     if check_engine is not None:
@@ -595,11 +595,11 @@ except ImportError:
                     else:
                         angle_rmp = (angle_rmp - 1) % 110
                         toup_rmp = False
-                    rmp = angle_rmp * 6000/110 
+                    rpm = angle_rmp * 6000/110 
                     try:
-                        queues_dict['rpm'].put(rmp,timeout=1.0)                    
+                        queues_dict['rpm'].put(rpm,timeout=1.0)                    
                     except Full:
-                        print(f"Очередь queues_dict['rpm'] переполнена, данные rmp: {rmp:.1f} потеряны")
+                        print(f"Очередь queues_dict['rpm'] переполнена, данные rpm: {rpm:.1f} потеряны")
 
                 current_time = time.time()
                 if current_time - last_update['oj_temp'] > intervals['oj_temp']:
