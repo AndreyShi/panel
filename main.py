@@ -28,7 +28,7 @@ def main():
 
 
     i2c_manager = i2c()
-    thread_i2c_ADS1115 = Thread(target=i2c_manager.task_ADS1115, name="task_ADS1115",args=(stop_event, queues_dict, ))
+    thread_i2c_ADS1115 = Thread(target=i2c_manager.task_canister_1, name="task_canister_1",args=(stop_event, queues_dict, ))
     thread_i2c_ADS1115.start()
    
     #uart_device = uart()

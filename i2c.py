@@ -17,7 +17,7 @@ try:
             self.bus = smbus2.SMBus(bus_number)
             self.lock = threading.Lock()
 
-        def read_adc(self, config, address):
+        def read_ads1115(self, config, address):
             with self.lock:    # блокируем доступ к шине
                 REG_CONVERSION = 0x00
                 REG_CONFIG = 0x01                               
@@ -27,7 +27,7 @@ try:
                 result = self.bus.read_i2c_block_data(address, REG_CONVERSION, 2)
                 value = (result[0] << 8) | result[1]
                 return value    # разблокируем доступ к шине, в этот момент другой поток приступит к работе с шиной
-        def task_ADS1115(self, stop_event:Event, queues_dict):
+        def task_canister_1(self, stop_event:Event, queues_dict):
             # Настройка конфигурации
             OS = 1        # Однократное преобразование
             # Дифференциальные режимы:
@@ -65,7 +65,7 @@ try:
             R1 = 430.0
             VCC = 3.3
             while not stop_event.is_set():
-                value = self.read_adc(config, 0x48)
+                value = self.read_ads1115(config, 0x48)
                 deq.append(value)
                 value_avg = (sum(deq) + len(deq) // 2) // len(deq) #целочесленное округление
                 voltage = value_avg * VOLTAGE_COEF # Конвертация в напряжение
@@ -86,7 +86,7 @@ except ImportError:
             self.bus_number = bus_number
             self.devices = {}  # Виртуальные устройства I2C
             print(f"🖥 i2c: виртуальная шина {bus_number}")
-        def task_ADS1115(self, stop_event:Event, queues_dict):
+        def task_canister_1(self, stop_event:Event, queues_dict):
             toup_R2 = True
             R2 = 1  
             while not stop_event.is_set():
