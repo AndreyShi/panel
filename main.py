@@ -41,11 +41,11 @@ def main():
     thread_rpm = Thread(target=OBD2.task_RPM, name="task_RPM",args=(stop_event, queues_dict, ))
     thread_rpm.start()
 
-    #spi_manager = spi()
-    #thread_spi_RPM = Thread(target=spi_manager.task_RPM, name="task_RPM", args=(stop_event, queues_dict, ))
-    #thread_spi_RPM.start()
-    #thread_spi_COOLANTTEMP_and_other = Thread(target=spi_manager.task_COOLANTTEMP_and_other, name="task_COOLANTTEMP_and_other", args=(stop_event, queues_dict, ))
-    #thread_spi_COOLANTTEMP_and_other.start()
+    #spi_master = spi()
+    #thread_COOLANT_TEMP = Thread(target=spi_master.task_COOLANT_TEMP, name="task_COOLANT_TEMP", args=(stop_event, queues_dict, ))
+    #thread_COOLANT_TEMP.start()
+    #thread_rmp = Thread(target=spi_master.task_RPM, name="task_RPM", args=(stop_event, queues_dict, ))
+    #thread_rmp.start()
 
     thread_dashboard = Thread(target=dashboard.task_Dashboard, name="task_dasboard",args=(stop_event, arguments, queues_dict ))
     thread_dashboard.start()
@@ -55,8 +55,6 @@ def main():
     thread_canister_1.join()
     thread_rpm.join()
     thread_COOLANT_TEMP.join()
-    #thread_spi_RPM.join()
-    #thread_spi_COOLANTTEMP_and_other.join()
     sys.exit()
 
 if __name__ == "__main__":
