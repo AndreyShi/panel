@@ -395,7 +395,7 @@ except ImportError:
                     try:
                         queues_dict['oj_temp'].put(oj_temp, timeout=1.0)                    
                     except Full:
-                        print(f"Очередь queues_dict['oj_temp'] переполнена, данные oj_temp: {oj_temp} потеряны") 
+                        print(f"task_COOLANT_TEMP: put timeout, data oj_temp {oj_temp} lost") 
                     stop_event.wait(1)
             else:
                 while not stop_event.is_set():
@@ -405,7 +405,7 @@ except ImportError:
                             oj_temp = response.value.magnitude
                             queues_dict['oj_temp'].put(oj_temp, timeout = 1.0)
                         except Full:
-                            print(f"Очередь oj_temp переполнена, данные: {oj_temp} потеряны") 
+                            print(f"task_COOLANT_TEMP: put timeout, data oj_temp {oj_temp} lost") 
                     stop_event.wait(1)
 
         def task_RPM(self, stop_event:Event, queues_dict):
@@ -428,7 +428,7 @@ except ImportError:
                     try:
                         queues_dict['rpm'].put(rpm, timeout=1.0)                    
                     except Full:
-                        print(f"Очередь queues_dict['rpm'] переполнена, данные rpm: {rpm:.1f} потеряны")
+                        print(f"task_RPM: put timeout, data rpm: {rpm:.1f} lost")
                     stop_event.wait(0.1)
             else:
                 while not stop_event.is_set():
@@ -438,7 +438,7 @@ except ImportError:
                             rpm = response.value.magnitude
                             queues_dict['rpm'].put(rpm, timeout=1.0)
                         except Full:
-                            print(f"Очередь rpm переполнена, данные: {rpm} потеряны") 
+                            print(f"task_RPM: put timeout, data rpm: {rpm:.1f} lost")
                     stop_event.wait(0.005)
         def find_bluetooth_com_port(self):
             """Поиск COM порта Bluetooth ELM327"""

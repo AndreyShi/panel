@@ -214,7 +214,6 @@ def task_Dashboard(stop_event:Event,
             last_update_time_rpm = current_time
             try:
                 rpm = queues_dict['rpm'].get_nowait()
-                queues_dict['rpm'].task_done()
             except Empty:
                 pass#print(f"Очередь queues_dict['rpm'] пуста, используются предыдущие данные rpm: {rpm:.1f}")
             smoothing_factor_rpm = 0.1
@@ -228,9 +227,8 @@ def task_Dashboard(stop_event:Event,
         # Изменение уровня
         try:
             R2 = queues_dict['R2_canister_1'].get_nowait()
-            queues_dict['R2_canister_1'].task_done()
         except Empty:
-            print(f"Очередь queues_dict['R2_canister_1'] пуста, используются предыдущие данные R2: {R2:.2f}")
+            pass#print(f"Очередь queues_dict['R2_canister_1'] пуста, используются предыдущие данные R2: {R2:.2f}")
 
         smoothing_factor_R2 = 0.1
         current_R2 += (R2 - current_R2) * smoothing_factor_R2
@@ -277,9 +275,8 @@ def task_Dashboard(stop_event:Event,
             last_update_time_oj_temp = current_time
             try:
                 oj_temp = queues_dict['oj_temp'].get_nowait()
-                queues_dict['oj_temp'].task_done()
             except Empty:
-                print(f"Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: {oj_temp}")
+                pass#print(f"Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: {oj_temp}")
             oj_temp_text = font_oj_temp.render(f"{int(oj_temp)}c", True, WHITE)
             if oj_temp < 10:
                 oj_temp_text_rect = oj_temp_text.get_rect(left=510, top=123)                # Для скоростей 0-9: выравнивание по правому краю

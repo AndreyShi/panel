@@ -78,7 +78,7 @@ try:
                 try:
                     queues_dict['R2_canister_1'].put(R2, timeout=1.0)                
                 except Full:
-                    print(f"Очередь R2_canister_1 переполнена, данные R2: {R2} потеряны") 
+                    print(f"task_canister_1: put timeout, data R2: {R2} lost") 
 except ImportError:
     # Создаем mock-версию smbus2
     class i2c:
@@ -104,6 +104,6 @@ except ImportError:
                 try:
                     queues_dict['R2_canister_1'].put(R2, timeout=1.0)                
                 except Full:
-                    print(f"Очередь R2_canister_1 переполнена, данные R2: {R2} потеряны") 
+                    print(f"task_canister_1: put timeout, data R2: {R2} lost")  
                 #print(f"put {R2:.3f} {datetime.now().strftime("%S.%f")[:-3]}")
                 

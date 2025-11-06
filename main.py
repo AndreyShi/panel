@@ -27,19 +27,19 @@ def main():
     }
 
 
-    i2c_manager = i2c()
-    thread_i2c_ADS1115 = Thread(target=i2c_manager.task_canister_1, name="task_canister_1",args=(stop_event, queues_dict, ))
-    thread_i2c_ADS1115.start()
+    i2c_master = i2c()
+    thread_canister_1 = Thread(target=i2c_master.task_canister_1, name="task_canister_1",args=(stop_event, queues_dict, ))
+    thread_canister_1.start()
    
     #uart_device = uart()
     #thread_uart = Thread(target=uart_device.task_GPSReader, name="thread_uart",args=(stop_event, ))
     #thread_uart.start()
 
     OBD2 = ELM327Bluetooth(threads_manager=True)
-    thread_OBD2_COOLANT_TEMP = Thread(target=OBD2.task_COOLANT_TEMP, name="task_COOLANT_TEMP",args=(stop_event, queues_dict, ))
-    thread_OBD2_COOLANT_TEMP.start()
-    thread_OBD2_RMP = Thread(target=OBD2.task_RPM, name="task_RPM",args=(stop_event, queues_dict, ))
-    thread_OBD2_RMP.start()
+    thread_COOLANT_TEMP = Thread(target=OBD2.task_COOLANT_TEMP, name="task_COOLANT_TEMP",args=(stop_event, queues_dict, ))
+    thread_COOLANT_TEMP.start()
+    thread_rpm = Thread(target=OBD2.task_RPM, name="task_RPM",args=(stop_event, queues_dict, ))
+    thread_rpm.start()
 
     #spi_manager = spi()
     #thread_spi_RPM = Thread(target=spi_manager.task_RPM, name="task_RPM", args=(stop_event, queues_dict, ))
@@ -52,9 +52,9 @@ def main():
 
     thread_dashboard.join()
     #thread_uart.join()
-    thread_i2c_ADS1115.join()
-    thread_OBD2_RMP.join()
-    thread_OBD2_COOLANT_TEMP.join()
+    thread_canister_1.join()
+    thread_rpm.join()
+    thread_COOLANT_TEMP.join()
     #thread_spi_RPM.join()
     #thread_spi_COOLANTTEMP_and_other.join()
     sys.exit()
