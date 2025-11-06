@@ -149,6 +149,8 @@ def task_Dashboard(stop_event:Event,
     font_speed = pygame.font.SysFont(main_shrift, 70,bold=False)
     # Загрузка шрифта температуры охлаждающей жидкости
     font_oj_temp = pygame.font.SysFont(main_shrift, 35,bold=False)
+    # Загрузка шрифта FPS 
+    font = pygame.font.Font(None, 16)  # Шрифт по умолчанию, размер 36
 
 
 
@@ -182,8 +184,10 @@ def task_Dashboard(stop_event:Event,
     current_rpm = 0
     rpm = 0
 
+    last_time = time.time()
+
     while not stop_event.is_set():
-        start_time = time.time()
+        #start_time = time.time()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 stop_event.set()
@@ -348,11 +352,19 @@ def task_Dashboard(stop_event:Event,
         else:
             screen.blit(v12_8_image, (852, 418))
 
-        pygame.display.flip()
-        # Адаптивное ожидание FPS = frame_time + wait_time
-        frame_time = time.time() - start_time
+        current_time = time.time()
+        full_time = current_time - last_time
+        last_time = current_time
         target_time = 1.0 / 40 #60FPS
-        wait_time = max(0.005, target_time - frame_time)
+        wait_time = 0.005#max(0.005, target_time - frame_time)
+        ### print FPS ###
+        fps_text = font.render(f"fps: {full_time:.3f}", True, (255, 255, 255))
+        screen.blit(fps_text, (0, 0))
+        #################
+        #update_region = pygame.Rect(0, 0, 100, 100)  # (x, y, width, height)
+        #pygame.display.update(update_region)
+        pygame.display.flip()
+
         #print(f"frame_time: {frame_time:.3f} temp CPU: {get_cpu_temp():.1f}°C")
         stop_event.wait(wait_time)
     pygame.quit()
