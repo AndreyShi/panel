@@ -15,17 +15,17 @@ def main():
         while True:
             if i == 0:
                 # Режим конфигурации
-                spi_.mcp2515_write_register(MCP2515_REG_CANCTRL, 0x80)
+                spi_.MCP2515_Write_Register(MCP2515_REG_CANCTRL, 0x80)
                 i = 1
             else:
                 # Нормальный режим
-                spi_.mcp2515_write_register(MCP2515_REG_CANCTRL, 0x00)
+                spi_.MCP2515_Write_Register(MCP2515_REG_CANCTRL, 0x00)
                 i = 0
             
             time.sleep(1)  # Задержка 1 секунда
             
             # Чтение и вывод значения регистра
-            reg_value = spi_.mcp2515_read_register(MCP2515_REG_CANCTRL)
+            reg_value = spi_.MCP2515_Read_Register(MCP2515_REG_CANCTRL)
             print(f"CANCTRL: 0x{reg_value:02X} ({reg_value})")
             time.sleep(0.1) 
             

@@ -23,7 +23,8 @@ def main():
     queues_dict = {
         'R2_canister_1' :Queue(maxsize=1),
         'rpm'           :Queue(maxsize=1),
-        'oj_temp'       :Queue(maxsize=1)
+        'oj_temp'       :Queue(maxsize=1),
+        'check'         :Queue(maxsize=1)
     }
 
 
@@ -35,15 +36,15 @@ def main():
     #thread_uart = Thread(target=uart_device.task_GPSReader, name="thread_uart",args=(stop_event, ))
     #thread_uart.start()
 
-    OBD2 = ELM327Bluetooth(threads_manager=True)
-    thread_COOLANT_TEMP = Thread(target=OBD2.task_COOLANT_TEMP, name="task_COOLANT_TEMP",args=(stop_event, queues_dict, ))
-    thread_COOLANT_TEMP.start()
-    thread_rpm = Thread(target=OBD2.task_RPM, name="task_RPM",args=(stop_event, queues_dict, ))
-    thread_rpm.start()
-
-    #spi_master = spi()
-    #thread_COOLANT_TEMP = Thread(target=spi_master.task_COOLANT_TEMP, name="task_COOLANT_TEMP", args=(stop_event, queues_dict, ))
+    #OBD2 = ELM327Bluetooth(threads_manager=True)
+    #thread_COOLANT_TEMP = Thread(target=OBD2.task_COOLANT_TEMP, name="task_COOLANT_TEMP",args=(stop_event, queues_dict, ))
     #thread_COOLANT_TEMP.start()
+    #thread_rpm = Thread(target=OBD2.task_RPM, name="task_RPM",args=(stop_event, queues_dict, ))
+    #thread_rpm.start()
+
+    spi_master = spi()
+    thread_COOLANT_TEMP = Thread(target=spi_master.task_COOLANT_TEMP, name="task_COOLANT_TEMP", args=(stop_event, queues_dict, ))
+    thread_COOLANT_TEMP.start()
     #thread_rmp = Thread(target=spi_master.task_RPM, name="task_RPM", args=(stop_event, queues_dict, ))
     #thread_rmp.start()
 
@@ -53,7 +54,7 @@ def main():
     thread_dashboard.join()
     #thread_uart.join()
     thread_canister_1.join()
-    thread_rpm.join()
+    #thread_rpm.join()
     thread_COOLANT_TEMP.join()
     sys.exit()
 
