@@ -62,7 +62,7 @@ try:
             # Инициализация SPI
             self.bus = spidev.SpiDev() # композиция
             self.bus.open(0, 0)  # bus 0, device 0 (CS0)
-            self.bus.max_speed_hz = 100000  # 100 kHz
+            self.bus.max_speed_hz = 5000000  # 100 kHz
             self.bus.mode = 0b00  # Режим 0 (CPOL=0, CPHA=0)
             self.bus.no_cs = True  # Важно! включаем автоматическое управление CS
         def MCP2515_Read_Register(self, reg_addr):
