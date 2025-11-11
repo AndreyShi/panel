@@ -200,7 +200,7 @@ try:
                 rx_data = bytearray(8)
 
                 self.MCP2515_Send_OBD_Request(CAN_OBD_REQUEST_ID, PID_ENGINE_RPM) 
-                data_length = self.MCP2515_Read_Message_Polling_FreeRTOS(rx_data, PID_ENGINE_RPM, 0.05);
+                data_length = self.MCP2515_Read_Message_Polling_FreeRTOS(rx_data, PID_ENGINE_RPM, 0.05)
                 if data_length > 0:
                     if self.Handle_Negative_Response(rx_data, 8):
                         print("rpm: er    ")#xQueueOverwrite(rpm_error_Queue, &(const char*){"rpm: er    "});
