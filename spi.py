@@ -90,28 +90,28 @@ try:
             tx_buffer = bytearray(8)
 
             #// Формируем OBD2 запрос
-            tx_buffer[0] = 0x02;       #// Кол-во байт данных
-            tx_buffer[1] = 0x01;       #// Режим: Show current data
-            tx_buffer[2] = pid;        #// PID запроса (0x0C - RPM)
-            tx_buffer[3] = 0x00;       #// Заполнители
-            tx_buffer[4] = 0x00;
-            tx_buffer[5] = 0x00;
-            tx_buffer[6] = 0x00;
-            tx_buffer[7] = 0x00;
+            tx_buffer[0] = 0x02       #// Кол-во байт данных
+            tx_buffer[1] = 0x01       #// Режим: Show current data
+            tx_buffer[2] = pid        #// PID запроса (0x0C - RPM)
+            tx_buffer[3] = 0x00       #// Заполнители
+            tx_buffer[4] = 0x00
+            tx_buffer[5] = 0x00
+            tx_buffer[6] = 0x00
+            tx_buffer[7] = 0x00
 
             # 1. Записываем ID сообщения (11-bit)
-            self.MCP2515_Write_Register(MCP2515_REG_TXB0SIDH, (can_id >> 3)); # Старшие 8 бит ID
-            self.MCP2515_Write_Register(MCP2515_REG_TXB0SIDL, (can_id << 5)); # Младшие 3 бита ID
+            self.MCP2515_Write_Register(MCP2515_REG_TXB0SIDH, (can_id >> 3)) # Старшие 8 бит ID
+            self.MCP2515_Write_Register(MCP2515_REG_TXB0SIDL, (can_id << 5)) # Младшие 3 бита ID
 
             # 2. Записываем DLC (длину данных) = 8
-            self.MCP2515_Write_Register(MCP2515_REG_TXB0DLC, 0x08);
+            self.MCP2515_Write_Register(MCP2515_REG_TXB0DLC, 0x08)
 
             # 3. Записываем данные
             for i in range(8):
-                self.MCP2515_Write_Register(MCP2515_REG_TXB0D0 + i, tx_buffer[i]);
+                self.MCP2515_Write_Register(MCP2515_REG_TXB0D0 + i, tx_buffer[i])
             
             # 4. Запрашиваем отправку (RTS) для буфера TXB0
-            rts_cmd = MCP2515_CMD_RTS_TX0
+            rts_cmd = [MCP2515_CMD_RTS_TX0]
             GPIO.output(self.CS_PIN_mcp2515, GPIO.LOW)  # Активируем CS
             self.bus.xfer2(rts_cmd) 
             GPIO.output(self.CS_PIN_mcp2515, GPIO.HIGH) # Деактивируем CS
@@ -183,23 +183,23 @@ try:
             stop_event.wait(0.01)#HAL_Delay(10);
 
             # 2. Настройка битрейта 500 kbps для кварца 8 МГц
-            self.MCP2515_Write_Register(MCP2515_REG_CNF1, 0x00); # SJW=1, BRP=0
-            self.MCP2515_Write_Register(MCP2515_REG_CNF2, 0xD0); # BTLMODE=1, SAM=0, PS1=6 Tq
-            self.MCP2515_Write_Register(MCP2515_REG_CNF3, 0x02); # PS2=3 Tq
+            self.MCP2515_Write_Register(MCP2515_REG_CNF1, 0x00) # SJW=1, BRP=0
+            self.MCP2515_Write_Register(MCP2515_REG_CNF2, 0xD0) # BTLMODE=1, SAM=0, PS1=6 Tq
+            self.MCP2515_Write_Register(MCP2515_REG_CNF3, 0x02) # PS2=3 Tq
 
             # 3. !!! НАСТРОЙКА ПРЕРЫВАНИЙ ПРОПУСКАЕТСЯ !!!
             # MCP2515_Write_Register(MCP2515_REG_CANINTE, 0x01); // ЭТУ СТРОКУ УБИРАЕМ
 
             # 4. Настройка буфера приема RXB0
-            self.MCP2515_Write_Register(MCP2515_REG_RXB0CTRL, 0x00); # Принимать все сообщения
+            self.MCP2515_Write_Register(MCP2515_REG_RXB0CTRL, 0x00) # Принимать все сообщения
 
             # 5. Возврат в нормальный режим
-            self.MCP2515_Write_Register(MCP2515_REG_CANCTRL, 0x00); # Нормальный режим
+            self.MCP2515_Write_Register(MCP2515_REG_CANCTRL, 0x00) # Нормальный режим
             stop_event.wait(0.01)#HAL_Delay(10);
             while not stop_event.is_set():
                 rx_data = bytearray(8)
 
-                self.MCP2515_Send_OBD_Request(CAN_OBD_REQUEST_ID, PID_ENGINE_RPM); 
+                self.MCP2515_Send_OBD_Request(CAN_OBD_REQUEST_ID, PID_ENGINE_RPM) 
                 data_length = self.MCP2515_Read_Message_Polling_FreeRTOS(rx_data, PID_ENGINE_RPM, 0.05);
                 if data_length > 0:
                     if self.Handle_Negative_Response(rx_data, 8):
@@ -211,7 +211,7 @@ try:
                     print("rpm: -    ")#xQueueOverwrite(rpm_error_Queue, &(const char*){"rpm: -    "}); }  
                 
                 stop_event.wait(0.01)#osDelay(10); задержка для восстановления MCP2515
-                self.MCP2515_Send_OBD_Request(CAN_OBD_REQUEST_ID, PID_COOLANT_TEMP);  
+                self.MCP2515_Send_OBD_Request(CAN_OBD_REQUEST_ID, PID_COOLANT_TEMP)  
                 if self.MCP2515_Read_Message_Polling_FreeRTOS(rx_data, PID_COOLANT_TEMP, 0.05) > 0:
                     if self.Handle_Negative_Response(rx_data, 8):
                         print("coolant: er    ")#xQueueOverwrite(coolant_error_Queue, &(const char*){"coolant: er    "});
