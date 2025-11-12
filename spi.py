@@ -165,7 +165,7 @@ try:
                 temp_value = data[3]
                 return temp_value - 40.0  # Формула: значение - 40 = температура в °C
             return -40.0  # Значение по умолчанию/ошибка
-        def Parse_DTC_Status(self, data: bytearray, length: int) -> DTCStatus:
+        def Parse_DTC_Status(self, data: bytearray, length: int) -> int:
             status = DTCStatus()          
             # Формат ответа: [04] [41] [01] [A] [B] [C] [D] [00]
             if length >= 8 and data[1] == 0x41 and data[2] == PID_DTC_STATUS:
