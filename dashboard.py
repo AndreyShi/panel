@@ -141,6 +141,13 @@ def task_Dashboard(stop_event:Event,
     last_update_time_Bort_Voltage = time.time()
     update_interval_Bort_Voltage = 1.3
 
+    # Загрузка checkengine_on
+    try:
+        on_checkengine_img = pygame.image.load("res/check_on_1024_576.png").convert_alpha()
+    except:
+        print("Ошибка: check_on_1024_576.png не найден.")
+    checkengine_cnt = 0
+
     # Загрузка шрифта времени
     main_shrift = 'Arial'
     time_font = pygame.font.SysFont(main_shrift, 46,bold=True)
@@ -213,16 +220,13 @@ def task_Dashboard(stop_event:Event,
 
         # Вращение стрелки RPM
         # Обновление угла стрелки RPM(имитация данных)
-        current_time = time.time()
-        if current_time - last_update_time_rpm > update_interval_rpm:
-            last_update_time_rpm = current_time
-            try:
-                rpm = queues_dict['rpm'].get_nowait()
-            except Empty:
-                pass#print(f"Очередь queues_dict['rpm'] пуста, используются предыдущие данные rpm: {rpm:.1f}")
-            smoothing_factor_rpm = 0.1
-            current_rpm += (rpm - current_rpm) * smoothing_factor_rpm
-            angle_rmp = float(current_rpm) * 110 / 6000.0
+        try:
+            rpm = queues_dict['rpm'].get_nowait()
+        except Empty:
+            pass#print(f"Очередь queues_dict['rpm'] пуста, используются предыдущие данные rpm: {rpm:.1f}")
+        smoothing_factor_rpm = 0.1
+        current_rpm += (rpm - current_rpm) * smoothing_factor_rpm
+        angle_rmp = float(current_rpm) * 110 / 6000.0
 
         rotated_rmp = pygame.transform.rotozoom(rmp_img, -1 * (angle_rmp + 16),1)  # 16...126
         new_rect = rotated_rmp.get_rect(center=rmp_rect.center)
@@ -274,18 +278,15 @@ def task_Dashboard(stop_event:Event,
         screen.blit(speed_text, speed_text_rect)
 
         #отображаем температуру охлаждающей жидкости
-        current_time = time.time()
-        if current_time - last_update_time_oj_temp > update_interval_oj_temp:
-            last_update_time_oj_temp = current_time
-            try:
-                oj_temp = queues_dict['oj_temp'].get_nowait()
-            except Empty:
-                pass#print(f"Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: {oj_temp}")
-            oj_temp_text = font_oj_temp.render(f"{int(oj_temp)}c", True, WHITE)
-            if oj_temp < 10:
-                oj_temp_text_rect = oj_temp_text.get_rect(left=510, top=123)                # Для скоростей 0-9: выравнивание по правому краю
-            else:
-                oj_temp_text_rect = oj_temp_text.get_rect(left=494, top=123)                # Для скоростей 10+: обычное позиционирование
+        try:
+            oj_temp = queues_dict['oj_temp'].get_nowait()
+        except Empty:
+            pass#print(f"Очередь queues_dict['oj_temp'] пуста, используются предыдущие данные oj_temp: {oj_temp}")
+        oj_temp_text = font_oj_temp.render(f"{int(oj_temp)}c", True, WHITE)
+        if oj_temp < 10:
+            oj_temp_text_rect = oj_temp_text.get_rect(left=510, top=123)                # Для скоростей 0-9: выравнивание по правому краю
+        else:
+            oj_temp_text_rect = oj_temp_text.get_rect(left=494, top=123)                # Для скоростей 10+: обычное позиционирование
         screen.blit(oj_temp_text, oj_temp_text_rect)
 
         # Отображаем температуру
@@ -351,6 +352,15 @@ def task_Dashboard(stop_event:Event,
             screen.blit(v13_6_image, (852, 418))  
         else:
             screen.blit(v12_8_image, (852, 418))
+
+        # Отображаем CheckEngine On
+        try:
+            checkengine_cnt = queues_dict['check'].get_nowait()
+        except Empty:
+            pass
+        if checkengine_cnt == 1:
+            screen.blit(on_checkengine_img, (258, 498))  # Рисуем состояние "вкл"
+
 
         current_time = time.time()
         full_time = current_time - last_time

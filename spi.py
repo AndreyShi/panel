@@ -176,7 +176,7 @@ try:
                 # Байты B, C, D содержат информацию о тестах
                 status.supported_tests = data[4]
                 status.test_completion = data[5]           
-            return status
+            return status.mil_status
         def task_COOLANT_TEMP(self, stop_event, queues_dict):
             # 1. Переход в режим конфигурации
             self.MCP2515_Write_Register(MCP2515_REG_CANCTRL, 0x80); # Режим конфигурации
@@ -216,8 +216,8 @@ try:
                     if self.Handle_Negative_Response(rx_data, 8):
                         print("coolant: er    ")#xQueueOverwrite(coolant_error_Queue, &(const char*){"coolant: er    "});
                     else:
-                        t = self.Parse_Coolant_Temperature(rx_data,8)
-                        queues_dict['oj_temp'].put(engine_rpm, timeout=1.0)#xQueueOverwrite(coolant_Queue, &t);
+                        t = self.Parse_Coolant_Temperature(rx_data, 8)
+                        queues_dict['oj_temp'].put(t, timeout=1.0)#xQueueOverwrite(coolant_Queue, &t);
                 else:
                     print("coolant: -    ")#xQueueOverwrite(coolant_error_Queue, &(const char*){"coolant: -    "}); 
                 
@@ -227,8 +227,8 @@ try:
                     if self.Handle_Negative_Response(rx_data, 8):
                         print("check: er    ")#xQueueOverwrite(checkengine_error_Queue, &(const char*){"check: er    "});
                     else:
-                        dt = self.Parse_DTC_Status(rx_data,8)
-                        queues_dict['check'].put(engine_rpm, timeout=1.0)#xQueueOverwrite(checkengine_Queue, &dt.mil_status);
+                        dt = self.Parse_DTC_Status(rx_data, 8)
+                        queues_dict['check'].put(dt, timeout=1.0)#xQueueOverwrite(checkengine_Queue, &dt.mil_status);
                 else:
                     print("check: -    ")#xQueueOverwrite(checkengine_error_Queue, &(const char*){"check: -    "});}
 
@@ -267,6 +267,11 @@ except ImportError:
         def task_COOLANT_TEMP(self, stop_event, queues_dict):
             toup_oj_temp = True
             oj_temp = 0
+
+            angle_rpm = 0
+            toup_rpm = True
+
+            checkengine = 0
             while not stop_event.is_set():
                 if toup_oj_temp:  # Движение вверх
                     oj_temp += 1 #random.uniform(0.0, 13.0)
@@ -281,5 +286,29 @@ except ImportError:
                 try:
                     queues_dict['oj_temp'].put(oj_temp, timeout=1.0)                    
                 except Full:
-                    print(f"Очередь queues_dict['oj_temp'] переполнена, данные oj_temp: {oj_temp} потеряны") 
+                    print(f"task_COOLANT_TEMP: put timeout, data oj_temp: {oj_temp} lost")
+
+                if toup_rpm:  
+                    angle_rpm += 10 
+                    if angle_rpm >= 110:
+                        angle_rpm = 110
+                        toup_rpm = False  
+                else:        
+                    angle_rpm -= 10  
+                    if angle_rpm <= 0:
+                        angle_rpm = 0
+                        toup_rpm = True   
+                try:
+                    queues_dict['rpm'].put(angle_rpm * 6000/110, timeout=1.0)                    
+                except Full:
+                    print(f"task_COOLANT_TEMP: put timeout, data rpm: {angle_rpm * 6000/110:.1f} lost")
+
+                if checkengine == 0:
+                    checkengine = 1   
+                else:
+                    checkengine = 0
+                try:
+                    queues_dict['check'].put(checkengine, timeout=1.0)#xQueueOverwrite(checkengine_Queue, &dt.mil_status);
+                except Full:
+                    print(f"task_COOLANT_TEMP: put timeout, data checkengine: {checkengine} lost") 
                 stop_event.wait(1)

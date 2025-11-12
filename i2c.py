@@ -79,7 +79,7 @@ try:
                     queues_dict['R2_canister_1'].put(R2, timeout=1.0)                
                 except Full:
                     print(f"task_canister_1: put timeout, data R2: {R2} lost") 
-                stop_event.wait(100)
+                stop_event.wait(0.1)
 except ImportError:
     # Создаем mock-версию smbus2
     class i2c:
@@ -107,4 +107,5 @@ except ImportError:
                 except Full:
                     print(f"task_canister_1: put timeout, data R2: {R2} lost")  
                 #print(f"put {R2:.3f} {datetime.now().strftime("%S.%f")[:-3]}")
+                stop_event.wait(0.1)
                 
