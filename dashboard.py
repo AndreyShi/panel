@@ -6,6 +6,7 @@ from threading import Event
 from typing import Literal
 from typing import List
 from queue import Queue,Empty
+from collections import deque
 
 def is_raspberry_pi():
     """Проверяет, работает ли на Raspberry Pi"""
@@ -192,7 +193,9 @@ def task_Dashboard(stop_event:Event,
     rpm = 0
 
     last_time = time.time()
-
+    deq = deque(maxlen=15)
+    update_temp_cpu = 0
+    cpu_temp = get_cpu_temp()
     while not stop_event.is_set():
         #start_time = time.time()
         for event in pygame.event.get():
@@ -238,7 +241,7 @@ def task_Dashboard(stop_event:Event,
         except Empty:
             pass#print(f"Очередь queues_dict['R2_canister_1'] пуста, используются предыдущие данные R2: {R2:.2f}")
 
-        smoothing_factor_R2 = 0.1
+        smoothing_factor_R2 = 0.5
         current_R2 += (R2 - current_R2) * smoothing_factor_R2
         #print(f'R2 {R2}  current_R2 {current_R2}')
         fuel_y =  (300 - current_R2) * (94 / 300) 
@@ -293,7 +296,7 @@ def task_Dashboard(stop_event:Event,
         current_time = time.time()
         if current_time - last_update_time_temp > update_interval_temp:
             last_update_time_temp = current_time
-            temp = get_cpu_temp()
+            temp = 0
             temp_text = time_font.render(f"{int(temp)}", True, (160, 160, 160))
         screen.blit(temp_text, (717,445))
 
@@ -365,12 +368,24 @@ def task_Dashboard(stop_event:Event,
         current_time = time.time()
         full_time = current_time - last_time
         last_time = current_time
-        target_time = 1.0 / 40 #60FPS
-        wait_time = 0.005#max(0.005, target_time - frame_time)
-        ### print FPS ###
-        fps_text = font.render(f"fps: {full_time:.3f}", True, (255, 255, 255))
+        wait_time = 0.005
+        deq.append(full_time)
+        avg_full_time = sum(deq) / len(deq) 
+        #print(f"full_time: {full_time:.3f}  avg_full_time: {avg_full_time:.3f} len: {len(deq)}")
+        ### print Frame ###
+        fps_text = font.render(f"frame: {avg_full_time:.3f}", True, (255, 255, 255))
         screen.blit(fps_text, (0, 0))
+        ### print FPS ###
+        fps_text = font.render(f"fps: {int(1/avg_full_time)}", True, (255, 255, 255))
+        screen.blit(fps_text, (0, 10))
         #################
+        ### print temp cpu ###
+        if update_temp_cpu == 40:  # расчет для 1 секунды,  приблизительное время цикла для Raspberry pi 4 0.025, 1сек/0.025c = 40 отсчетов
+            update_temp_cpu = 0
+            cpu_temp = get_cpu_temp()
+        update_temp_cpu += 1
+        fps_text = font.render(f"cpu t: {int(cpu_temp)}", True, (255, 255, 255))
+        screen.blit(fps_text, (0, 20))       
         #update_region = pygame.Rect(0, 0, 100, 100)  # (x, y, width, height)
         #pygame.display.update(update_region)
         pygame.display.flip()

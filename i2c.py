@@ -60,7 +60,7 @@ try:
             COMP_QUE = 0b11 # Отключить компаратор                
             config = (OS << 15) | (MUX << 12) | (PGA << 9) | (MODE << 8) | (DR << 5) | (COMP_MODE << 4) | (COMP_POL << 3) | (COMP_LAT << 2) | COMP_QUE    
             # очередь для усреднения
-            deq = deque(maxlen=15)
+            deq = deque(maxlen=3)
             VOLTAGE_COEF = 2.048 / 32767.0
             R1 = 430.0
             VCC = 3.3
@@ -79,7 +79,7 @@ try:
                     queues_dict['R2_canister_1'].put(R2, timeout=1.0)                
                 except Full:
                     print(f"task_canister_1: put timeout, data R2: {R2} lost") 
-                stop_event.wait(0.1)
+                stop_event.wait(0.01)
 except ImportError:
     # Создаем mock-версию smbus2
     class i2c:
