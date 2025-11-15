@@ -196,42 +196,46 @@ try:
             # 5. Возврат в нормальный режим
             self.MCP2515_Write_Register(MCP2515_REG_CANCTRL, 0x00) # Нормальный режим
             stop_event.wait(0.01)#HAL_Delay(10);
+            # разделение по времени опроса 
+            # rpm 9 раз из 10 циклов , а температура ож и чек  1 из 10
+            vr = 0
             while not stop_event.is_set():
+                vr += 1
                 rx_data = bytearray(8)
-
-                self.MCP2515_Send_OBD_Request(CAN_OBD_REQUEST_ID, PID_ENGINE_RPM) 
-                data_length = self.MCP2515_Read_Message_Polling_FreeRTOS(rx_data, PID_ENGINE_RPM, 0.05)
-                if data_length > 0:
-                    if self.Handle_Negative_Response(rx_data, 8):
-                        print("rpm: er    ")#xQueueOverwrite(rpm_error_Queue, &(const char*){"rpm: er    "});
+                if vr != 10:
+                    self.MCP2515_Send_OBD_Request(CAN_OBD_REQUEST_ID, PID_ENGINE_RPM) 
+                    data_length = self.MCP2515_Read_Message_Polling_FreeRTOS(rx_data, PID_ENGINE_RPM, 0.05)
+                    if data_length > 0:
+                        if self.Handle_Negative_Response(rx_data, 8):
+                            print("rpm: er    ")#xQueueOverwrite(rpm_error_Queue, &(const char*){"rpm: er    "});
+                        else:
+                            engine_rpm = self.Parse_Engine_RPM(rx_data, 8)
+                            queues_dict['rpm'].put(engine_rpm, timeout=1.0) #xQueueOverwrite(rpm_Queue, &engine_rpm);                
+                    else: 
+                        print("rpm: -    ")#xQueueOverwrite(rpm_error_Queue, &(const char*){"rpm: -    "}); }  
+                elif vr == 10:
+                    vr = 0
+                    stop_event.wait(0.01)#osDelay(10); задержка для восстановления MCP2515
+                    self.MCP2515_Send_OBD_Request(CAN_OBD_REQUEST_ID, PID_COOLANT_TEMP)  
+                    if self.MCP2515_Read_Message_Polling_FreeRTOS(rx_data, PID_COOLANT_TEMP, 0.05) > 0:
+                        if self.Handle_Negative_Response(rx_data, 8):
+                            print("coolant: er    ")#xQueueOverwrite(coolant_error_Queue, &(const char*){"coolant: er    "});
+                        else:
+                            t = self.Parse_Coolant_Temperature(rx_data, 8)
+                            queues_dict['oj_temp'].put(t, timeout=1.0)#xQueueOverwrite(coolant_Queue, &t);
                     else:
-                        engine_rpm = self.Parse_Engine_RPM(rx_data, 8)
-                        queues_dict['rpm'].put(engine_rpm, timeout=1.0) #xQueueOverwrite(rpm_Queue, &engine_rpm);                
-                else: 
-                    print("rpm: -    ")#xQueueOverwrite(rpm_error_Queue, &(const char*){"rpm: -    "}); }  
-                
-                stop_event.wait(0.01)#osDelay(10); задержка для восстановления MCP2515
-                self.MCP2515_Send_OBD_Request(CAN_OBD_REQUEST_ID, PID_COOLANT_TEMP)  
-                if self.MCP2515_Read_Message_Polling_FreeRTOS(rx_data, PID_COOLANT_TEMP, 0.05) > 0:
-                    if self.Handle_Negative_Response(rx_data, 8):
-                        print("coolant: er    ")#xQueueOverwrite(coolant_error_Queue, &(const char*){"coolant: er    "});
+                        print("coolant: -    ")#xQueueOverwrite(coolant_error_Queue, &(const char*){"coolant: -    "}); 
+                    
+                    stop_event.wait(0.01)#osDelay(10); //задержка для восстановления MCP2515
+                    self.MCP2515_Send_OBD_Request(CAN_OBD_REQUEST_ID, PID_DTC_STATUS)
+                    if self.MCP2515_Read_Message_Polling_FreeRTOS(rx_data, PID_DTC_STATUS, 0.05) > 0:
+                        if self.Handle_Negative_Response(rx_data, 8):
+                            print("check: er    ")#xQueueOverwrite(checkengine_error_Queue, &(const char*){"check: er    "});
+                        else:
+                            dt = self.Parse_DTC_Status(rx_data, 8)
+                            queues_dict['check'].put(dt, timeout=1.0)#xQueueOverwrite(checkengine_Queue, &dt.mil_status);
                     else:
-                        t = self.Parse_Coolant_Temperature(rx_data, 8)
-                        queues_dict['oj_temp'].put(t, timeout=1.0)#xQueueOverwrite(coolant_Queue, &t);
-                else:
-                    print("coolant: -    ")#xQueueOverwrite(coolant_error_Queue, &(const char*){"coolant: -    "}); 
-                
-                stop_event.wait(0.01)#osDelay(10); //задержка для восстановления MCP2515
-                self.MCP2515_Send_OBD_Request(CAN_OBD_REQUEST_ID, PID_DTC_STATUS)
-                if self.MCP2515_Read_Message_Polling_FreeRTOS(rx_data, PID_DTC_STATUS, 0.05) > 0:
-                    if self.Handle_Negative_Response(rx_data, 8):
-                        print("check: er    ")#xQueueOverwrite(checkengine_error_Queue, &(const char*){"check: er    "});
-                    else:
-                        dt = self.Parse_DTC_Status(rx_data, 8)
-                        queues_dict['check'].put(dt, timeout=1.0)#xQueueOverwrite(checkengine_Queue, &dt.mil_status);
-                else:
-                    print("check: -    ")#xQueueOverwrite(checkengine_error_Queue, &(const char*){"check: -    "});}
-
+                        print("check: -    ")#xQueueOverwrite(checkengine_error_Queue, &(const char*){"check: -    "});}
                 stop_event.wait(0.1)
 except ImportError:
     class spi:
